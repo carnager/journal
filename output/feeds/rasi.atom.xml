@@ -1,0 +1,1349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>POKE 53280,0</title><link href="https://journal.53280.de/" rel="alternate"></link><link href="https://journal.53280.de/feeds/rasi.atom.xml" rel="self"></link><id>https://journal.53280.de/</id><updated>2014-12-25T12:40:00+01:00</updated><entry><title>Grouping VA albums in mpd</title><link href="https://journal.53280.de/mpd.html" rel="alternate"></link><updated>2014-12-25T12:40:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-12-25:mpd.html</id><summary type="html">&lt;h2 id="the-issue"&gt;The issue&lt;/h2&gt;
+&lt;p&gt;Every once in a while some user joins #mpd and asks how albums with
+several artists can be grouped together instead of displaying each artist
+individually in library.
+And while I agree that this is annoying, their assumptions are wrong.
+They assume this is a player issue, while in reality it's caused by missing
+tags in the music files.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Messed up Compilation album" src="/images/missing_tags1.jpg" /&gt;&lt;/p&gt;
+&lt;h2 id="say-hello-to-the-albumartist-tag"&gt;Say hello to the albumartist tag&lt;/h2&gt;
+&lt;p&gt;The solution is in fact relatively simple. The artist tag that everyone knows
+just represents the artist for the current title.
+There is another artist tag, called "albumartist", which represents the artist
+of the album.&lt;/p&gt;
+&lt;h2 id="wrong-usage-of-albumartist-a-common-problem"&gt;Wrong usage of albumartist - a common problem&lt;/h2&gt;
+&lt;p&gt;Many users know the albumartist tag, but only tag their Multi-artist albums
+accordingly. This is wrong, because for this to work, the music player has to
+make exceptions what to do with files that don't have an albumartist tag.&lt;/p&gt;
+&lt;p&gt;You see: EVERY album has a global artist. It just happens to be the same artist
+for all tracks on regular albums. It's still a album-related artist.&lt;/p&gt;
+&lt;p&gt;Long story short: Every album needs an albumartist tag. For regular albums
+the albumartist tag is the same as the artist tag.
+For multi-artist releases it can be something like "Various Artists" or "Soundtrack"&lt;/p&gt;
+&lt;h2 id="i-have-thousands-of-albums-how-to-sort-this-mess"&gt;I have thousands of albums, how to sort this mess?&lt;/h2&gt;
+&lt;p&gt;Don't worry, the process of fixing your files is a short one. It's a 2 step
+process.&lt;/p&gt;
+&lt;h3 id="1-fixing-of-your-multi-artist-releases"&gt;1. Fixing of your multi-artist releases.&lt;/h3&gt;
+&lt;p&gt;First step is to get a tagger, for this example I use the excellent picard tagger.
+Install it from your repository.
+Now load all your multi-artist albums into it, by simply dragging the folders
+on picards window.&lt;/p&gt;
+&lt;p&gt;When all files were properly added, select them all and watch the lower part
+of picards window.
+As you can see my files already have the albumartist tag. If you have such a line
+too, simply click in the right column and give it a name (e.g. Various Artists)&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Adding albumartist tag in picard" src="/images/picard.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;If no "Album Artist" line is visible right click and chose "Add New Tag"
+type "albumartist" and fill the value as above.&lt;/p&gt;
+&lt;p&gt;Now make sure that "Move Files" and "Rename Files" is disabled in the Options
+menu on top.&lt;/p&gt;
+&lt;p&gt;Finally hit save. You have successfully fixed your Multi-Artist albums.&lt;/p&gt;
+&lt;h3 id="2-fix-your-regular-albums"&gt;2. Fix your regular albums&lt;/h3&gt;
+&lt;p&gt;But remember, all albums need an albumartist tag. Luckily ncmpcpp has a little
+tool to fix this automatically for you, but we need to build it.&lt;/p&gt;
+&lt;p&gt;Open a terminal.
+Create an empty directory and cd into it.
+run these commands:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;wget http://repo.or.cz/w/ncmpcpp.git/blob_plain/HEAD:/extras/Makefile
+wget http://repo.or.cz/w/ncmpcpp.git/blob_plain/HEAD:/extras/artist_to_albumartist.cpp
+make
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will build a little programm, called artist_to_albumartist, that you can find
+in the same directory now. To use it simply run this command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;find /PATH/TO/YOUR/MUSIC \( -name &amp;quot;*.flac&amp;quot; -o -name &amp;quot;*.mp3&amp;quot; -o -name &amp;quot;*.ogg&amp;quot; \) -exec ./artist_to_albumartist {} \;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace /PATH/TO/YOUR/MUSIC with your actual music root.
+This will copy the artist tag of all files to the albumartist tag, skipping those files
+that already have one (aka the multi-artist releases we fixed earlier)&lt;/p&gt;
+&lt;p&gt;Finally to make ncmpcpp use this new tag add this to your ~/.ncmpcpp/config file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;media_library_primary_tag = &amp;quot;album_artist&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="result"&gt;Result&lt;/h2&gt;
+&lt;p&gt;See the same track from first image properly grouped under its album:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Fixed Compilation album" src="/images/fixed_tags.jpg" /&gt;&lt;/p&gt;</summary><category term="MPD"></category><category term="linux"></category><category term="tagging"></category></entry><entry><title>clerk - mpd client that needs typing</title><link href="https://journal.53280.de/clerk-mpd-client-that-needs-typing.html" rel="alternate"></link><updated>2014-08-09T10:36:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-08-09:clerk-mpd-client-that-needs-typing.html</id><summary type="html">&lt;h2 id="history"&gt;History&lt;/h2&gt;
+&lt;p&gt;Back in march I wrote about &lt;a href="https://journal.53280.de/mpdMenu.html"&gt;mpdMenu&lt;/a&gt;.
+It basically used mpc and dmenu to create lists of albums/files that were displayed
+in dmenu. It had some nice features like rating albums/tracks but to be honest it
+seemed a little rough around the edges.&lt;/p&gt;
+&lt;p&gt;Those times are over now. mpdMenu is history. Long live clerk.
+clerk is basically the same thing as mpdMenu was, but it's presented in a much
+nicer way.
+I cleaned up the whole menu structure and i think it looks rather nice now.
+But let's see what clerk can actually do.&lt;/p&gt;
+&lt;h2 id="features"&gt;Features&lt;/h2&gt;
+&lt;p&gt;Let's first have a look at the main menu.&lt;/p&gt;
+&lt;h3 id="the-main-menu"&gt;The Main Menu&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Pelican" src="/images/clerk-main.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Nothing too exciting here. Play a random album, play random tracks.
+The number of tracks can be configured in the options menu, which we will
+look at later.&lt;/p&gt;
+&lt;h3 id="browsing"&gt;Browsing&lt;/h3&gt;
+&lt;h4 id="current-artist"&gt;Current Artist&lt;/h4&gt;
+&lt;p&gt;The next section covers actual browsing functionality. The current artist menu
+allows you to browse all albums or tracks by the artist currently playing in mpd.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Current Artist" src="/images/clerk-current-artist.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Do you see the section that says "Adding Mode: Add"?
+Clicking this will change the Mode to either "Insert" or "Replace" so you can
+decide how the actual album will be handled in the queue.&lt;/p&gt;
+&lt;h4 id="current-queue"&gt;Current Queue&lt;/h4&gt;
+&lt;p&gt;The Current Queue menu will show what it says: mpd's current queue.
+It has 2 modes: Play and Delete. Play will simply change playback to the
+chosen song, whereas Delete will remove items from the queue.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Queue" src="/images/clerk-queue.jpg" /&gt;&lt;/p&gt;
+&lt;h4 id="manage-playlists"&gt;Manage Playlists&lt;/h4&gt;
+&lt;p&gt;The Manage Playlists menu allows you to save, crop and clear the current
+playlist - or load an already saved one. It will ask for a filename and
+even warn you if the playlist already exists.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Save Playlist" src="/images/clerk-playlist-save.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;In addition to this, you will find options to load an RSS Feed
+(those should be manually put in a file called podcasts in clerk's config directory)&lt;/p&gt;
+&lt;p&gt;There are also entries to suspend or resume the current queue.
+This is very handy if you are listening to a podcast and want to continue later.
+Just suspend the playlist, listen to whatever you want and later resume it.
+It will load the state of the playlist and the position of the active track.&lt;/p&gt;
+&lt;h3 id="browsing-the-database"&gt;Browsing the Database&lt;/h3&gt;
+&lt;p&gt;Clerk offers several ways to browse the database.
+First there is the hierarchical browser, which let's you first chose an artist
+and displays all albums related to it. If you chose to browse even deeper
+it will show all tracks of the given album.
+At any point in the library it's possible to add/insert/replace every shown artist/album/track.&lt;/p&gt;
+&lt;p&gt;If you use rofi it is even possible to add several songs at once, by hitting Shift+Enter.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hierachical Browser" src="/images/clerk-browser1.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;It's also possible to browse the Database by date, list all albums.
+Last but not least clerk can show you all songs in database.
+Each browser can add, insert or replace the results into the queue.&lt;/p&gt;
+&lt;p&gt;Speaking of insert mode. This is one thing that most mpd clients get wrong, imho.
+You see, insert in mpd means, that the track will be placed right after the one
+that is currently playing. Which works fine, as long as you are not in random mode.
+For this scenario mpd offers a feature called "Priorities", which can set a weight
+to songs in the playlist. Sounds like a good solution, but the developer of mpd only
+made it available for random mode. In normal playback mode weights are ignored.&lt;/p&gt;
+&lt;p&gt;So there are some clients that support priorities. But they seperate it from the "Insert" command.
+Which seems wrong to me, because all in all you always want the same thing, be it in random mode or not:
+Play that goddamn song NEXT.&lt;/p&gt;
+&lt;p&gt;Well, this is exactly what clerk does. Insert will always play the selected songs next. No matter what
+mode mpd is in. Nice.&lt;/p&gt;
+&lt;h3 id="a-word-about-mpc"&gt;A word about mpc&lt;/h3&gt;
+&lt;p&gt;For the tracks and album listings I really wanted to have a way to show a nice tag based view.
+Which turned out to be not-easy at all.
+Why is that?
+Well there are actually 2 issues here, which both needed solving.
+First of all mpd does not allow to list albums or tracks in a formatted way.
+This basically means that you have to fetch the whole database with all tags just to display one part
+of the information (in this case either title or album). This is slow. very.
+I worked around this by creating a cache for clerk.
+Clerk will automatically detect if the mpd database has changed since the last time. If it has it will update
+its local cache. No user interaction needed.
+But there was another issue. mpc only knows the listall command (which only sends URIs) - not the listallinfo (which sends tags).&lt;/p&gt;
+&lt;p&gt;But I wanted those nice formatted views!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Sad Kitten" src="/images/sad-kitten.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;So I took the hard road and started developing a python clone of mpc. I simply called mppc (music player python client).
+It's an explicit dependency for clerk and is used in quite some places.
+Not only does it allow for the formatted album/track view, but it also adds readcomments support to clerk, a feature mpd offers
+for nearly a year now, but I havent seen a single client using it. With readcomments it's possible to show ALL tags of a file.&lt;/p&gt;
+&lt;p&gt;But let's see what's left to show.&lt;/p&gt;
+&lt;h3 id="the-options-dialog"&gt;The options dialog&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Options Dialog" src="/images/clerk-options.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The options dialog gives you all options you would expect in a mpd client.
+You can change all modes, enable/disable outputs, set crossfade or toggle replaygain.
+In addition it's possible to start/stop mpdscribble. This works for either local
+or remote mpdscribbles (set in config file). Right now it kills or start mpdscribble.
+Hopefully mpdscribble will receive an option to suspend scrobbling itself via the
+client protocol. We will see :)&lt;/p&gt;
+&lt;h3 id="ratings"&gt;Ratings&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt; UPDATE &lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The ratings system is using mpds sticker database now, so ratings work for
+every filetype. Everything else remains the same, flat files for portability.&lt;/p&gt;
+&lt;p&gt;One feature in clerk not found elsewhere is the ability to rate albums or tracks.
+Personally I don't do track ratings, but in my tests it worked fine for flac
+and mp3 files. Vorbis files are not yet implemented. It's just a pain to update
+vorbis tags.&lt;/p&gt;
+&lt;p&gt;So I will only speak about the albumratings now.
+First of all, ratings need local access to the music directory.
+I wanted a way that is 100% portable and absolutely NOT tied to a musicplayer.
+This rules out mpd's sticker database, which seems hardly maintained anyway.
+Tags would be another obvious choice, but it's still not accessible enough for my taste.
+So the way I created ratings is by saving a ratings file to the album folder.
+That's all. A tiny text file containing the actual rating in the first line
+and some basic information (artist, date, album) afterwards.&lt;/p&gt;
+&lt;p&gt;Clerk can even load albums by ratings. To make this happen I use bash's globbing mode
+which can very fast wander through the filesystem. Then I only need to grep for ratings in all text files
+and voila: It works.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Ratings" src="/images/clerk-rating.jpg" /&gt;&lt;/p&gt;
+&lt;h3 id="mildly-related"&gt;Mildly related&lt;/h3&gt;
+&lt;p&gt;I already wrote about &lt;a href="https://journal.53280.de/albumlist_creator.html"&gt;musiclist.py&lt;/a&gt;
+This little script uses the ratings file and mpd itself to create a nice table of all albums, including
+ratings. Thanks to thor77 this now shows some very nice Stars instead of plain numbers.
+You can see the result here: &lt;a href="https://list.53280.de"&gt;musiclist&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="the-rest"&gt;The rest&lt;/h3&gt;
+&lt;p&gt;Apart from those features clerk offers basic controls (Play, Stop, Next, Prev, Clear) and lookup of
+lyrics, artists, albums (using surfraw).&lt;/p&gt;
+&lt;p&gt;Last but not least every single dialog is available via cli arguments to quickly bind your favorite features to
+hotkeys. See all available arguments with &lt;code&gt;clerk -h&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you want to try it out, you can find it on github, together with mppc:&lt;br /&gt;
+&lt;a href="https://github.com/carnager"&gt;github&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To get the most out of it, you really should get the excellent rofi tool by DaveDavenport:&lt;br /&gt;
+&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi&lt;/a&gt;&lt;/p&gt;</summary><category term="mpd"></category><category term="programming"></category></entry><entry><title>Create html list of all your albums</title><link href="https://journal.53280.de/albumlist_creator.html" rel="alternate"></link><updated>2014-04-05T14:20:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-04-05:albumlist_creator.html</id><summary type="html">&lt;h2 id="python-to-the-rescue"&gt;Python to the rescue&lt;/h2&gt;
+&lt;p&gt;I love my CD collection. I needed months to rip all my CDs into flac format and tagging it all correctly will probably never be finished.
+But what use is the biggest collection if you cannot show off? So I wanted a script that makes a nice html table of my music.
+And ideally it uses MPD since that has an index of my music anyway.&lt;/p&gt;
+&lt;p&gt;So I started fiddling with bash and mpc only to find out that mpc is too limited to reach my goal. At least not in a performant way.
+So the aproach I originally took was to use metaflac to scan my collection and create a html table from that.
+This is how it looks:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;!DOCTYPE html PUBLIC &amp;quot;-//W3C//DTD XHTML 1.0 Strict//EN&amp;quot; &amp;quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;html xmlns=&amp;quot;http://www.w3.org/1999/xhtml&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;meta http-equiv=&amp;quot;content-type&amp;quot; content=&amp;quot;text/html; charset=utf-8&amp;quot; /&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;meta name=&amp;quot;robots&amp;quot; content=&amp;quot;noindex&amp;quot; /&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;title&amp;gt;My Music&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;style type=&amp;quot;text/css&amp;quot;&amp;gt;&amp;lt;!--body {font-family:arial;font-size: medium;color: #3D3D3D;}table.tablesorter {background-color: &lt;/span&gt;
+&lt;span class="s1"&gt;#CDCDCD; align=&amp;quot;center&amp;quot;; margin: 0px auto;text-align: left;width: 50%;}table.tablesorter thead tr th, table.tablesorter tfoot tr th &lt;/span&gt;
+&lt;span class="s1"&gt;{background-color: #e6EEEE;border: 1px solid #FFF;font-size: medium;padding: 4px;}table.tablesorter thead tr .header &lt;/span&gt;
+&lt;span class="s1"&gt;{background-image:url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw%3D%3D);background-repeat: &lt;/span&gt;
+&lt;span class="s1"&gt;no-repeat;background-position: center right;cursor: pointer;}table.tablesorter tbody td {color: #3D3D3D;padding: &lt;/span&gt;
+&lt;span class="s1"&gt;4px;background-color: #FFF;vertical-align: top;}table.tablesorter tbody tr.odd td { background-color:#F0F0F6; }table.tablesorter &lt;/span&gt;
+&lt;span class="s1"&gt;thead tr .headerSortUp { &lt;/span&gt;
+&lt;span class="s1"&gt;background-image:url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7); &lt;/span&gt;
+&lt;span class="s1"&gt;}table.tablesorter thead tr .headerSortDown { &lt;/span&gt;
+&lt;span class="s1"&gt;background-image:url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7); &lt;/span&gt;
+&lt;span class="s1"&gt;}table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {background-color: #8dbdd8; }--&amp;gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;script type=&amp;quot;text/javascript&amp;quot; src=&amp;quot;jquery.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;script type=&amp;quot;text/javascript&amp;quot; src=&amp;quot;jquery.tablesorter.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;&amp;lt;!--&lt;/span&gt;
+&lt;span class="s1"&gt;--&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;table id=&amp;quot;music&amp;quot; class=&amp;quot;tablesorter&amp;quot; margin-{left,right}: auto;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;thead&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;tr&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;th&amp;gt;Artist&amp;lt;/th&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;          &amp;lt;th&amp;gt;Album&amp;lt;/th&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;lt;th&amp;gt;Ratings&amp;lt;/th&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;       &amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;lt;/thead&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;         &amp;lt;tbody&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;me&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="p"&gt;##*/&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$# &lt;/span&gt;-eq &lt;span class="m"&gt;0&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;-h&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;--help&amp;#39;&lt;/span&gt; -o ! -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Usage: &lt;/span&gt;&lt;span class="nv"&gt;$me&lt;/span&gt;&lt;span class="s2"&gt; /path/to/flacs&amp;quot;&lt;/span&gt; 1&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;2
+    &lt;span class="nb"&gt;exit &lt;/span&gt;1
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="nv"&gt;fdir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$TMPDIR&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="nv"&gt;TMPDIR&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/tmp&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt; mktemp -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TMPDIR&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;me&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.XXXXXXXX&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$tdir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$me&lt;/span&gt;&lt;span class="s2"&gt;: error: mktemp failed.&amp;quot;&lt;/span&gt; 1&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;2
+    &lt;span class="nb"&gt;exit &lt;/span&gt;1
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="nv"&gt;lastDir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read &lt;/span&gt;f&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -f &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;f&lt;/span&gt;&lt;span class="p"&gt;%/*&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$currentDir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$lastDir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="nv"&gt;lastDir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$currentDir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="nb"&gt;shopt&lt;/span&gt; -qs nocasematch
+    &lt;span class="nv"&gt;artist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;albumArtist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;album&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;year&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;0000&amp;#39;&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read &lt;/span&gt;line&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+        &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; in
+            &lt;span class="nv"&gt;artist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;*&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;artist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="p"&gt;#*=&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt;
+            &lt;span class="nv"&gt;albumartist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;*&lt;span class="p"&gt;|&lt;/span&gt;album*artist&lt;span class="o"&gt;=&lt;/span&gt;*&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;albumArtist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="p"&gt;#*=&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt;
+            &lt;span class="nv"&gt;album&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;*&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;album&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="p"&gt;#*=&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt;
+            &lt;span class="nv"&gt;date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;*&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;year&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="p"&gt;#*=&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="k"&gt;esac&lt;/span&gt;
+    &lt;span class="k"&gt;done&lt;/span&gt; &amp;lt; &amp;lt;&lt;span class="o"&gt;(&lt;/span&gt; metaflac --export-tags-to&lt;span class="o"&gt;=&lt;/span&gt;- &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;shopt&lt;/span&gt; -qu nocasematch
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$albumArtist&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; -a -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$artist&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$albumArtist&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="nv"&gt;albumArtist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$artist&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$album&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; -n &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$albumArtist&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; md5sum - &lt;span class="p"&gt;|&lt;/span&gt; cut -d &lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt; -f &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;albumArtist&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/artists&amp;quot;&lt;/span&gt;
+        mkdir &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="nv"&gt;rating&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-&amp;#39;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/../../rating.txt&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nb"&gt;read &lt;/span&gt;rating &amp;lt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/../../rating.txt&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/../rating.txt&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nb"&gt;read &lt;/span&gt;rating &amp;lt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/../rating.txt&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/rating.txt&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nb"&gt;read &lt;/span&gt;rating &amp;lt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;currentDir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/rating.txt&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$year&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$rating&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$album&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/albums&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt; &amp;lt; &amp;lt;&lt;span class="o"&gt;(&lt;/span&gt; find &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$fdir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; -type f -iname &lt;span class="s1"&gt;&amp;#39;*.flac&amp;#39;&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class="p"&gt;|&lt;/span&gt; sort -u &lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read &lt;/span&gt;artistHash artist&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+        &lt;span class="nv"&gt;rowspan&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt; sort -u &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/albums&amp;quot;&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class="p"&gt;|&lt;/span&gt; wc -l 2&amp;gt;/dev/null &lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;tr&amp;gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;  &amp;lt;td rowspan=&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$rowspan&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;gt;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artist&lt;/span&gt;&lt;span class="p"&gt;//&amp;amp;/&amp;amp;amp;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;lt;/td&amp;gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read &lt;/span&gt;year rating album&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+                &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;  &amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class="nv"&gt;$year&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;album&lt;/span&gt;&lt;span class="p"&gt;//&amp;amp;/&amp;amp;amp;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;lt;/td&amp;gt;&amp;quot;&lt;/span&gt;
+                &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;  &amp;lt;td&amp;gt;&amp;lt;font color=red&amp;gt;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;rating&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;quot;&lt;/span&gt;
+                &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;/tr&amp;gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;done&lt;/span&gt; &amp;lt; &amp;lt;&lt;span class="o"&gt;(&lt;/span&gt; sort -u &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;artistHash&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/albums&amp;quot;&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt; &amp;lt; &amp;lt;&lt;span class="o"&gt;(&lt;/span&gt; sort -u -k &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;tdir&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/artists&amp;quot;&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;/tbody&amp;gt;&amp;lt;/table&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;    &amp;lt;a href=&amp;quot;&lt;/span&gt;http://validator.w3.org/check?uri&lt;span class="o"&gt;=&lt;/span&gt;referer&lt;span class="s2"&gt;&amp;quot;&amp;gt;&amp;lt;img&lt;/span&gt;
+&lt;span class="s2"&gt;      src=&amp;quot;&lt;/span&gt;http://www.w3.org/Icons/valid-xhtml10&lt;span class="s2"&gt;&amp;quot; alt=&amp;quot;&lt;/span&gt;Valid XHTML 1.0 Strict&lt;span class="s2"&gt;&amp;quot; height=&amp;quot;&lt;/span&gt;31&lt;span class="s2"&gt;&amp;quot; width=&amp;quot;&lt;/span&gt;88&lt;span class="s2"&gt;&amp;quot; /&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;  &amp;lt;/p&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&amp;quot;&lt;/span&gt;
+rm -rf &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$tdir&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;This worked perfectly but it had a drawback. Original music that I purchased from amazon and other sources could not be read by metaflac.
+Using mutagen could have been another option, but I &lt;em&gt;really&lt;/em&gt; prefer to do my stuff with MPD :)&lt;/p&gt;
+&lt;h2 id="rob-python-and-performance"&gt;rob``, python and performance&lt;/h2&gt;
+&lt;p&gt;rob`` from the german arch linux IRC channel was so kind to create this really neat python script which does exactly what I wanted:
+Get all artists and their albums and create a nice html table. In addition it also scans my album ratings (created with my &lt;a href="https://journal.53280.de/mpdMenu.html"&gt;mpdmenu&lt;/a&gt;
+) and puts them in another column.
+After some css tweaking the script was done in a few minutes.
+The above bash script which uses metaflac takes about 1 minute to finish the table. My tries with bash+mpc needed at least 20 minutes (!). 
+This very script now needs around 30 seconds. Not too bad :)&lt;/p&gt;
+&lt;p&gt;Anyway here is the script:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env python2&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;operator&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;mpd&lt;/span&gt;  &lt;span class="c"&gt;# pacman -S python2-mpd&lt;/span&gt;
+&lt;span class="n"&gt;MUSIC_ROOT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/mnt/wasteland/Audio/Rips&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;RATING_FILE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;rating.txt&amp;#39;&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;conditions&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;conditions&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c"&gt;# turn dict into flattened list, e.g.&lt;/span&gt;
+        &lt;span class="c"&gt;# {k1: v1, k2: v2} -&amp;gt; [k1, v1, k2, v2]&lt;/span&gt;
+        &lt;span class="n"&gt;cond&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;reduce&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;operator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;conditions&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;cond&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;listallinfo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;yielded&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;yielded&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+        &lt;span class="n"&gt;yielded&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_artists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;albumartist&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_rating&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;artist&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;album&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;file&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;albumartist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;artist&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;album&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;album&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;next&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MUSIC_ROOT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;CD ?\d&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IGNORECASE&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;RATING_FILE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;rating&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;readline&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;rating&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;IOError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;-&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mpd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MPDClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;MPD_HOST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;MPD_PORT&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;6600&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;pw&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;@&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;pw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;@&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;pw&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;html&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;head&amp;gt;&amp;lt;meta charset=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;utf-8&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;/&amp;gt;&amp;lt;link rel=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;stylesheet&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt; href=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;gt;&amp;lt;style&amp;gt;body{background:#eee}table{margin:5em auto; max-width:56em; background: white;}&amp;lt;/style&amp;gt;&amp;lt;/head&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;body&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;div class=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;table-responsive&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;table id=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;music&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt; class=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;table table-bordered&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;thead&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;tr&amp;gt;&amp;lt;th&amp;gt;Artist&amp;lt;/th&amp;gt;&amp;lt;th&amp;gt;Year&amp;lt;/th&amp;gt;&amp;lt;th&amp;gt;Album&amp;lt;/th&amp;gt;&amp;lt;th&amp;gt;Rating&amp;lt;/th&amp;gt;&amp;lt;/tr&amp;gt;&amp;lt;/thead&amp;gt;&amp;lt;tbody&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;artist&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_artists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;islower&lt;/span&gt;&lt;span class="p"&gt;())):&lt;/span&gt;
+        &lt;span class="n"&gt;albums&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;album&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;albumartist&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;artist&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&amp;lt;tr class=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;newartist&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;gt;&amp;lt;td rowspan=&amp;quot;{0}&amp;quot;&amp;gt;{1}&amp;lt;/td&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;albums&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;artist&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;album&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;albums&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;rating&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_rating&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;artist&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;album&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="c"&gt;# templating libraries ftw&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;td&amp;gt;{}&amp;lt;/td&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;date&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;td&amp;gt;{}&amp;lt;/td&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;album&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;td&amp;gt;&amp;lt;font color=&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;red&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;gt;{}&amp;lt;/td&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rating&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;/tr&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;/table&amp;gt;&amp;lt;/div&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h2 id="the-result"&gt;The Result&lt;/h2&gt;
+&lt;p&gt;And &lt;a href="https://53280.de/music.html"&gt;here&lt;/a&gt; is how the generated html will look like&lt;/p&gt;</summary><category term="MPD"></category><category term="linux"></category><category term="scripting"></category><category term="python"></category></entry><entry><title>mpdMenu - mpd on stereoids</title><link href="https://journal.53280.de/mpdMenu.html" rel="alternate"></link><updated>2014-03-29T14:20:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-03-29:mpdMenu.html</id><summary type="html">&lt;h1 id="this-article-is-obsolete-read-on-here"&gt;This article is obsolete.... read on &lt;a href="https://journal.53280.de/clerk-mpd-client-that-needs-typing.html"&gt;HERE&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;...&lt;/p&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;I am a fan of &lt;a href="https://bitbucket.org/melek/dmenu2" title="dmenu"&gt;dmenu&lt;/a&gt;. I think it's incredibly useful and fast for a lot
+of tasks.
+Recently DaveDavenport forked simpleswitcher and renamed it to &lt;a href="https://github.com/DaveDavenport/rofi" title="rofi"&gt;rofi&lt;/a&gt;. Why do I mention it?
+Well he added a dmenu mode to it, which makes it 100% compatible with the latter. Nice!&lt;/p&gt;
+&lt;p&gt;It's also no secret that I am a MPD advocate. What it does it does perfectly -
+the server/client design makes it's nothing but ideal for a home stereo system.&lt;/p&gt;
+&lt;p&gt;So I thought why not combine these 2 worlds and control MPD in the fastest way imaginable?
+So I wrote mpdMenu - a dmenu based MPD client. Yes there are others out there already, but none
+of these do, what mpdMenu does - trust me on that one.&lt;/p&gt;
+&lt;h2 id="features"&gt;Features&lt;/h2&gt;
+&lt;p&gt;So what makes it special?
+The dmenu-based MPD clients you can find on the web normally do one thing: browse your Playlist (or maybe the database)
+and select some songs/albums to play. That's cool, but I wanted more than that.&lt;/p&gt;
+&lt;p&gt;So mpdMenu has 4 modes to add, insert or replace music.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Artist - Browse Artists and add/play all their music&lt;/li&gt;
+&lt;li&gt;Albums - Chose any album and add/play it.&lt;/li&gt;
+&lt;li&gt;Track - Search for any track and add/play it.&lt;/li&gt;
+&lt;li&gt;Database Browser - Browse Database by Artist &amp;gt; Album &amp;gt; Track and add/play whatever you chose.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Believe me, espacally the 3rd part is a blessing. It never was that easy and that fast to play a specific song.
+Don't believe me? Have a look yourself:&lt;/p&gt;
+&lt;p&gt;{% video ./images/mpd_track.mp4 800 450 https://pic.53280.de/mpd.png %}&lt;/p&gt;
+&lt;p&gt;It works around the same for the other modes too.&lt;/p&gt;
+&lt;h3 id="handling-whats-on-your-queue"&gt;Handling what's on your queue&lt;/h3&gt;
+&lt;p&gt;Sometimes you want to hear more from the currently playing artist. That's why I added a submenu which does just this.
+Selecting the "Current Artist" Option will present you a menu which will let you add tracks or albums by the Artist that
+is currently playing.&lt;/p&gt;
+&lt;p&gt;Last but not least mpdMenu allows you to browse the current Queue and switch songs.&lt;/p&gt;
+&lt;h3 id="just-play-something"&gt;Just play something!&lt;/h3&gt;
+&lt;p&gt;But sometimes you simply don't know what you want to listen to.
+For these ocasions I added 2 modes.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Random Album&lt;/li&gt;
+&lt;li&gt;Random Tracks&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;They do exactly what they say. For random tracks the script will ask you how many items you want to get added to your playlist.&lt;/p&gt;
+&lt;h3 id="options"&gt;Options&lt;/h3&gt;
+&lt;p&gt;The Options Menu presents you with most MPD options that can be switched on the fly.
+This includes changing the volume, enabling modes (random, single, consume, repeat), changing replaygain,
+enabling/disabling audio outputs and setting crossfading.&lt;/p&gt;
+&lt;p&gt;It also includes a submenu called lastfm, which allows to start and stop mpdscribble. It also can add/remove currently playing artists to
+a blacklist so they will never be scrobbled. At the moment the lastfm functionality calls an external script, because the code for the blacklist
+is relatively ugly :)&lt;/p&gt;
+&lt;h3 id="rating"&gt;Rating&lt;/h3&gt;
+&lt;p&gt;My personal Highlight is the Rating Menu.
+Here you can rate albums and tracks and search your database by rated tracks.&lt;/p&gt;
+&lt;p&gt;This is done in 2 different ways.
+For tracks I use an external tagger (python-eyed3) to add a comment field to the files which includes the rating.
+In theory I could have used the same way for albums too, but MPD cannot handle several comment fields, so I had to be clever.&lt;/p&gt;
+&lt;p&gt;So if you rate an album, mpdMenu will create a tiny text file inside of the album directory which includes Artist, Album and Rating.
+When searching for album ratings bash's globbing is used to magically find the relevant information.&lt;/p&gt;
+&lt;p&gt;It works really well:&lt;/p&gt;
+&lt;p&gt;{% video ./images/mpd_rating.mp4 800 450 https://pic.53280.de/mpd.png %}&lt;/p&gt;
+&lt;h3 id="where-to-get-it"&gt;Where to get it&lt;/h3&gt;
+&lt;p&gt;You can find the little script in my &lt;a href="https://git.53280.de/carnager/scripts/tree/mpdMenu" title="git repository"&gt;git repository&lt;/a&gt;&lt;/p&gt;</summary><category term="MPD"></category><category term="linux"></category><category term="scripting"></category></entry><entry><title>Herbstluftwm</title><link href="https://journal.53280.de/herbstluftwm.html" rel="alternate"></link><updated>2013-06-05T10:00:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2013-06-05:herbstluftwm.html</id><summary type="html">&lt;p&gt;In my neverending journey to find the optimal windowmanager, I finally
+ended up trying herbstluftwm, which i wanted to give a shot for ages.&lt;/p&gt;
+&lt;p&gt;Turned out to be a good choice. But wait. What makes herbstluftwm
+different from the gazillion other windowmanagers out there? Let's dive
+into it.&lt;/p&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="the-config-file"&gt;
+&lt;h2&gt;The config file...&lt;/h2&gt;
+&lt;p&gt;...which really is no config file at all. You see, in herbstluftwm
+everything is done through a helper binary called herbstclient. You want
+to resize a window? You call something like&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;herbstclient resize right +0.05
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The same thing applies to every other possible action. So the config
+file is really just a set of herbstclient commands that sets the initial
+state of the windowmanager. This includes things like number of
+workspaces (and names for them too), layout for individual workspaces,
+placement rules for applications, as well as theming and keybindings.&lt;/p&gt;
+&lt;p&gt;Here is my example config file (which is appropriately called
+&amp;quot;autostart&amp;quot;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="c"&gt;# this is a simple config for herbstluftwm&lt;/span&gt;
+
+&lt;span class="k"&gt;function&lt;/span&gt; hc&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+herbstclient &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+hc emit_hook reload
+
+&lt;span class="c"&gt;#xsetroot -solid &amp;#39;#5A8E3A&amp;#39;&lt;/span&gt;
+
+
+&lt;span class="c"&gt;# remove all existing keybindings&lt;/span&gt;
+hc keyunbind --all
+
+&lt;span class="c"&gt;# keybindings&lt;/span&gt;
+&lt;span class="nv"&gt;Mod&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Mod4
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-z floating toggle
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-q quit
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-r reload
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-k close
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Return spawn termite --role&lt;span class="o"&gt;=&lt;/span&gt;term /bin/zsh
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-Return spawn termite /bin/zsh
+hc keybind Print spawn teiler
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-s spawn termite --role&lt;span class="o"&gt;=&lt;/span&gt;ssh -e karif
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-F12 spawn lastfm.sh switch
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-F12 spawn lastfm.sh check
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-F11 spawn love
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Tab spawn simpleswitcher -now
+
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-p spawn dmenu_run
+
+&lt;span class="c"&gt;# tags&lt;/span&gt;
+&lt;span class="nv"&gt;TAG_NAMES&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;terms,www,stuff,media,dl,gfx&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;TAG_KEYS&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;1..9&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;)&lt;/span&gt;
+
+hc rename default &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TAG_NAMES&lt;/span&gt;&lt;span class="p"&gt;[0]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; i in &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="p"&gt;!TAG_NAMES[@]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    hc add &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TAG_NAMES&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="nv"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TAG_KEYS&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; ! &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$key&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        hc keybind &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$Mod&lt;/span&gt;&lt;span class="s2"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;$key&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;       use  &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TAG_NAMES&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+        hc keybind &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$Mod&lt;/span&gt;&lt;span class="s2"&gt;-Shift-&lt;/span&gt;&lt;span class="nv"&gt;$key&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; move &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TAG_NAMES&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+&lt;span class="c"&gt;# cycle through tags&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-period use_index +1 --skip-visible
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-comma  use_index -1 --skip-visible
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Right focus right
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Left focus left
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Up focus up
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Down focus down
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-Right &lt;span class="nb"&gt;shift &lt;/span&gt;right
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-Left &lt;span class="nb"&gt;shift &lt;/span&gt;left
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-Up &lt;span class="nb"&gt;shift &lt;/span&gt;up
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-Down &lt;span class="nb"&gt;shift &lt;/span&gt;down
+
+&lt;span class="c"&gt;# layouting&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-r remove
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-space cycle_layout 1
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-v split vertical 0.5
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-h split horizontal 0.5
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-v split vertical 0.3
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;+Shift+h split horizontal 0.3
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-s floating toggle
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-f fullscreen toggle
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Shift-p pseudotile toggle
+
+&lt;span class="c"&gt;# resizing&lt;/span&gt;
+&lt;span class="nv"&gt;RESIZESTEP&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0.05
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Control-Left resize left +&lt;span class="nv"&gt;$RESIZESTEP&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Control-Down resize down +&lt;span class="nv"&gt;$RESIZESTEP&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Control-Up resize up +&lt;span class="nv"&gt;$RESIZESTEP&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Control-Right resize right +&lt;span class="nv"&gt;$RESIZESTEP&lt;/span&gt;
+
+&lt;span class="c"&gt;# mouse&lt;/span&gt;
+hc mouseunbind --all
+hc mousebind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Button1 move
+hc mousebind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Button2 resize
+hc mousebind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-Button3 zoom
+
+&lt;span class="c"&gt;# focus&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-BackSpace   cycle_monitor
+&lt;span class="c"&gt;#hc keybind $Mod-Tab         cycle_all +1&lt;/span&gt;
+&lt;span class="c"&gt;#hc keybind $Mod-Shift-Tab   cycle_all -1&lt;/span&gt;
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-c cycle
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-i jumpto urgent
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-KP_Left &lt;span class="nb"&gt;shift &lt;/span&gt;left
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-KP_Down &lt;span class="nb"&gt;shift &lt;/span&gt;down
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-KP_Right &lt;span class="nb"&gt;shift &lt;/span&gt;right
+hc keybind &lt;span class="nv"&gt;$Mod&lt;/span&gt;-KP_Up &lt;span class="nb"&gt;shift &lt;/span&gt;up
+
+&lt;span class="c"&gt;# colors&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_border_active_color &lt;span class="s1"&gt;&amp;#39;#82B414&amp;#39;&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_border_normal_color &lt;span class="s1"&gt;&amp;#39;#0c0d0e&amp;#39;&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_bg_normal_color &lt;span class="s1"&gt;&amp;#39;#121212&amp;#39;&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_active_opacity 90
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_normal_opacity 70
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_bg_active_color &lt;span class="s1"&gt;&amp;#39;#121212&amp;#39;&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_bg_transparent 0
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_border_width 1
+hc &lt;span class="nb"&gt;set &lt;/span&gt;window_border_width 1
+hc &lt;span class="nb"&gt;set &lt;/span&gt;window_border_inner_width 3
+hc &lt;span class="nb"&gt;set &lt;/span&gt;window_border_normal_color &lt;span class="s1"&gt;&amp;#39;#454545&amp;#39;&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;window_border_active_color &lt;span class="s1"&gt;&amp;#39;#0c73c2&amp;#39;&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;always_show_frame 1
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_gap 2
+&lt;span class="c"&gt;# add overlapping window borders&lt;/span&gt;
+hc &lt;span class="nb"&gt;set &lt;/span&gt;window_gap 2
+hc &lt;span class="nb"&gt;set &lt;/span&gt;frame_padding 0
+hc &lt;span class="nb"&gt;set &lt;/span&gt;smart_window_surroundings 1
+
+hc &lt;span class="nb"&gt;set &lt;/span&gt;smart_frame_surroundings 1
+hc &lt;span class="nb"&gt;set &lt;/span&gt;mouse_recenter_gap 0
+hc &lt;span class="nb"&gt;set &lt;/span&gt;focus_follows_mouse 1
+hc &lt;span class="nb"&gt;set &lt;/span&gt;raise_on_focus 1
+hc pad &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt;5&lt;/span&gt; 5
+
+&lt;span class="c"&gt;# rules&lt;/span&gt;
+hc unrule -F
+&lt;span class="c"&gt;#hc rule class=XTerm tag=3 # move all xterms to tag 3&lt;/span&gt;
+hc rule &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;on &lt;span class="c"&gt;# normally do not focus new clients&lt;/span&gt;
+&lt;span class="c"&gt;# give focus to most common terminals&lt;/span&gt;
+hc rule class~&lt;span class="s1"&gt;&amp;#39;(.*[Rr]xvt.*|.*[Tt]erm|Konsole)&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;on
+hc rule windowtype~&lt;span class="s1"&gt;&amp;#39;_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;pseudotile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;on
+hc rule &lt;span class="nv"&gt;windowtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;_NET_WM_WINDOW_TYPE_DIALOG&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;on
+hc rule windowtype~&lt;span class="s1"&gt;&amp;#39;_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK)&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Firefox &lt;span class="nv"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;www
+hc rule &lt;span class="nv"&gt;windowrole&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;term &lt;span class="nv"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;terms
+hc rule &lt;span class="nv"&gt;windowrole&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;ssh &lt;span class="nv"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;terms
+
+&lt;span class="c"&gt;# unlock, just to be sure&lt;/span&gt;
+hc unlock
+
+herbstclient &lt;span class="nb"&gt;set &lt;/span&gt;tree_style &lt;span class="s1"&gt;&amp;#39;╾│ ├└╼─┐&amp;#39;&lt;/span&gt;
+
+&lt;span class="c"&gt;# do multi monitor setup here, e.g.:&lt;/span&gt;
+&lt;span class="c"&gt;# hc set_monitors 1280x1024+0+0 1280x1024+1280+0&lt;/span&gt;
+&lt;span class="c"&gt;# or simply:&lt;/span&gt;
+&lt;span class="c"&gt;# hc detect_monitors&lt;/span&gt;
+
+&lt;span class="c"&gt;# find the panel&lt;/span&gt;
+&lt;span class="nv"&gt;panel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/.config/herbstluftwm/panel.sh
+&lt;span class="o"&gt;[&lt;/span&gt; -x &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$panel&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nv"&gt;panel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/etc/xdg/herbstluftwm/panel.sh
+&lt;span class="k"&gt;for&lt;/span&gt; monitor in &lt;span class="k"&gt;$(&lt;/span&gt;herbstclient list_monitors &lt;span class="p"&gt;|&lt;/span&gt; cut -d: -f1&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="c"&gt;# start it on each monitor&lt;/span&gt;
+&lt;span class="nv"&gt;$panel&lt;/span&gt; &lt;span class="nv"&gt;$monitor&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+&lt;span class="c"&gt;# GIMP&lt;/span&gt;
+&lt;span class="c"&gt;# ensure there is a gimp tag&lt;/span&gt;
+hc load gfx &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;(split horizontal:0.850000:0&lt;/span&gt;
+&lt;span class="s1"&gt;  (split horizontal:0.200000:1&lt;/span&gt;
+&lt;span class="s1"&gt;    (clients vertical:0)&lt;/span&gt;
+&lt;span class="s1"&gt;    (clients grid:0))&lt;/span&gt;
+&lt;span class="s1"&gt;   (clients vertical:0))&lt;/span&gt;
+&lt;span class="s1"&gt; &amp;#39;&lt;/span&gt;               &lt;span class="c"&gt;# load predefined layout&lt;/span&gt;
+&lt;span class="c"&gt;# center all other gimp windows on gimp tag&lt;/span&gt;
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp &lt;span class="nv"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;gfx &lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;01&lt;/span&gt; &lt;span class="nv"&gt;pseudotile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;on
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp windowrole~&lt;span class="s1"&gt;&amp;#39;gimp-(image-window|toolbox|dock)&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="nv"&gt;pseudotile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp &lt;span class="nv"&gt;windowrole&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;gimp-toolbox &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off &lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;00
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp &lt;span class="nv"&gt;windowrole&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;gimp-dock &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off &lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1
+
+All the available commands are explained in the manpage of herbstluftwm.
+But the last bit needs some special attention.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="layouts"&gt;
+&lt;h2&gt;layouts&lt;/h2&gt;
+&lt;p&gt;The nice thing about herbstluftwm, compared to e.g. i3 is that you can
+predefine layouts per workspace. Watch the code again:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# GIMP&lt;/span&gt;
+&lt;span class="c"&gt;# ensure there is a gimp tag&lt;/span&gt;
+hc load gfx &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;(split horizontal:0.850000:0&lt;/span&gt;
+&lt;span class="s1"&gt;  (split horizontal:0.200000:1&lt;/span&gt;
+&lt;span class="s1"&gt;    (clients vertical:0)&lt;/span&gt;
+&lt;span class="s1"&gt;    (clients grid:0))&lt;/span&gt;
+&lt;span class="s1"&gt;   (clients vertical:0))&lt;/span&gt;
+&lt;span class="s1"&gt; &amp;#39;&lt;/span&gt;               &lt;span class="c"&gt;# load predefined layout&lt;/span&gt;
+center all other gimp windows on gimp tag
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp &lt;span class="nv"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;gfx &lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;01&lt;/span&gt; &lt;span class="nv"&gt;pseudotile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;on
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp windowrole~&lt;span class="s1"&gt;&amp;#39;gimp-(image-window|toolbox|dock)&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="nv"&gt;pseudotile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp &lt;span class="nv"&gt;windowrole&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;gimp-toolbox &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off &lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;00
+hc rule &lt;span class="nv"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Gimp &lt;span class="nv"&gt;windowrole&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;gimp-dock &lt;span class="nv"&gt;focus&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;off &lt;span class="nv"&gt;index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This makes sure that we create 3 &amp;quot;tiles&amp;quot; on a workspace called &amp;quot;gfx&amp;quot;.
+Then it creates rules based on the gimp windows, so that each gimp
+window will be put into the desired tile. This will result in this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="layouts" src="https://blog.53280.de/content/images/2014/Jan/hlwm_layout.png" /&gt;&lt;/p&gt;
+&lt;p&gt;That's really nice, isn't it? The best part is you don't have to fiddle
+with this by try and error. simply resize your windows the way you want
+them to be and run&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;herbstclient dump gfx
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;where gfx is the workspace name (or tag). This will output the desired
+string which you can either use manually like i did in my gimp example,
+or you use the command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;herbstclient load &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat DUMP_FILE&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="frames-vs-windows"&gt;
+&lt;h2&gt;frames vs. windows&lt;/h2&gt;
+&lt;p&gt;The thing about herbstluftwm that is most obviously different from other
+windowmanagers is probably the added layer called &amp;quot;frames&amp;quot;. Where you
+simply tile windows in other windowmanagers, you create frames in
+herbstluftwm. Inside of these frames you finally start your
+applications. Each frame can be tiled individually. This is best
+explained with a screenshot:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="hlwm" src="https://blog.53280.de/content/images/2014/Jan/hlwm.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Have a look at the upper right corner. There are 4 terminal windows. The
+active one has a blue border. But look outside of those 4 windows. There
+is another border - green in my case. This marks the frame. Inside of
+this you can have as many open windows as you wish and tile them in
+different ways (splith, splitv, grid, maximized). The terminal window on
+the lower right is another frame. Since its a single window it would
+only receive a green outline when focused. The 2 terminals on the left
+are another frame. This adds a bit of complexibility but is quite
+flexible too.&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="panels"&gt;
+&lt;h2&gt;panels&lt;/h2&gt;
+&lt;p&gt;Another nice thing about hlwm is the way it handles panels. Hlwm has an
+inbuilt margin feature to preserve space for panels. This way I could
+easily make sure that my xfce4-panel works flawlessly. When you watch my
+config file above you probably noticed that it calls a script named
+&amp;quot;panel.sh&amp;quot;. The default panel.sh script sets some variables which are
+finally piped to dzen2. That's rather nice, but it's missing a
+systemtray. In addition to this current dzen2 has a bug which makes
+clickable workspaces non-functional. So i created a very minimal
+panel.sh which only loads my xfce4-panel:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="nv"&gt;monitor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;1&lt;/span&gt;&lt;span class="k"&gt;:-&lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="nv"&gt;panel_height&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;16
+herbstclient pad &lt;span class="nv"&gt;$monitor&lt;/span&gt; &lt;span class="nv"&gt;$panel_height&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That's all. xfce4-panel works perfectly, thanks to the &amp;quot;panel_height&amp;quot;
+option.&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="floating"&gt;
+&lt;h2&gt;floating&lt;/h2&gt;
+&lt;p&gt;Most tiling window managers have a special layer for floating windows.
+Windows that float will simply be shown on top of your other windows.
+Herbstluftwm does not know the concept of a special floating layer. It's
+either all floating or all tiled, but you can switch between these modes
+with one keystroke.&lt;/p&gt;
+&lt;p&gt;As a workaround herbstluftwm includes a mode called &amp;quot;pseudotile&amp;quot;.
+Applications that are tagged to be pseudotiled (in default config this
+includes all dialogs), will simply be tiled too, but still they are
+floating. kind of. Let's show:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pseudotile" src="https://blog.53280.de/content/images/2014/Jan/pseudotile.png" /&gt;&lt;/p&gt;
+&lt;p&gt;As you can see the dialog is in a regular tile (50% vertical split) but
+still its dimensions are kept. While this works ok for some apps, it
+works bad for others. Luckily a proper floating layer will be added to
+hlwm in the future, but the developers are not sure yet how it will
+look/work in the end.&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;conclusion&lt;/h2&gt;
+&lt;p&gt;Herbstluftwm is a very nice window manager.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The configuration is dead easy, a simple bash (perl,python,etc) file
+which calls a bunch of herbstclient commands.&lt;/li&gt;
+&lt;li&gt;Little things are taken care of, like the margin feature for panels.&lt;/li&gt;
+&lt;li&gt;Did I mention that hlwm supports compositing out of the box? Well, it
+does.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;But the best part: Its constantly being worked on and has several
+contributors, which is a very good sign for a free software project.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="windowmanager"></category><category term="linux"></category><category term="tiling"></category><category term="herbstluftwm"></category></entry><entry><title>Another Month - Another Window Manager</title><link href="https://journal.53280.de/another-month-another-window-manager.html" rel="alternate"></link><updated>2013-02-24T11:00:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2013-02-24:another-month-another-window-manager.html</id><summary type="html">&lt;p&gt;&lt;img alt="i3-1" src="images/i3-1.jpg" /&gt;&lt;/p&gt;
+&lt;div class="section" id="bugs-they-are-everywhere"&gt;
+&lt;h2&gt;Bugs! They are Everywhere!&lt;/h2&gt;
+&lt;p&gt;After a few weeks of usage fluxbox turned out to be really nice - but at
+the same time it turned its nasty second face towards me, screaming
+“BUGS!” all the time. If you have read my last post, you could already
+see some of it in there. To make other panels work correctly, you need a
+patch. Positioning of windows is buggy, its nearly impossible to place
+windows pixel perfect on screen via rules. In worst case the same MoveTo
+command reacts differently each time, resulting in slight jumpings of
+the windows. No major issue, but it left the feeling of hackish,
+uncomplete software - even tho everything worked so far. Multihead also
+doesn’t work as it should - fluxbox freezes when plugging in another
+monitor. While this does not affect me yet, I am planning to buy another
+screen soon, so I was looking for a viable alternative with better
+multihead support.&lt;/p&gt;
+&lt;p&gt;I looked for alternatives to clone my subtle/fluxbox setup once again.
+Only viable options were pekwm and openbox, which I simply don’t want to
+use. PekWM for some nasty bugs and openbox for its configuration. So I
+headed back to the world of real tiling WMs. I wanted an easy-to-use
+config file, which - frankly - only left 2 possible candidates: i3 and
+herbstluftwm. For now I decided to go with i3, since I had some
+experiences with it. But I always wanted to play with hlwm too - maybe
+next month :).&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="say-hello-to-i3"&gt;
+&lt;h2&gt;Say hello to i3!&lt;/h2&gt;
+&lt;p&gt;So whats in i3? Well, primary it offers some easy to understand
+workflow. First of all, i3 is not as manual as subtle is. Windows get
+split automatically. Open a 2nd window and both windows will fill 100%
+of your screen. Either split (horizontally or vertically), tabbed or
+cascaded (same as tabbed, but window titles are above each other,
+instead side-by-side). With each window you open, another split is
+created - once again - horizontally or vertically. Thats all there is to
+window management, really. But it has some nice features which make
+using it a joy:&lt;/p&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="the-scratchpad"&gt;
+&lt;h3&gt;The Scratchpad&lt;/h3&gt;
+&lt;p&gt;The concept of a scratchpad is not new. Basically a window that is in a
+scratchpad can be hidden/shown at any time on any workspace. But i3 goes
+a little further. You can have as many windows in your scratchpad as you
+like and show only the one you want with one keystroke. Configuration of
+this is easy:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+bindsym $mod+Mod1+1 [class=&amp;quot;xv|MPlayer&amp;quot;] scratchpad show
+&lt;/pre&gt;
+&lt;p&gt;This will create a hotkey to show any window in scratchpad that matches
+the given class - in this case MPlayer. You can also have windows opened
+directly in scratchpad. Useful for tools you want to have open all the
+time, but not visible - and they lack a tray icon. Example keepassx:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="marks-and-jumps"&gt;
+&lt;h3&gt;Marks and Jumps&lt;/h3&gt;
+&lt;p&gt;Another nice feature are Jumps and Marks. Both basically do the same
+thing. You have a hotkey that takes you to a specific app. With jumps
+all you have to do is this:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+bindsym $mod+Control+1 [window_role=&amp;quot;ssh&amp;quot;] focus
+&lt;/pre&gt;
+&lt;p&gt;This will instantly focus my terminal with WINDOW_ROLE “ssh” when
+hitting the hotkey. On whatever workspace/screen this window may be.
+Pretty neat.&lt;/p&gt;
+&lt;p&gt;Marks basically do the very same thing, but they tag the windows. To
+make things a little more convinient I got myself some little i3 scripts
+that handle this with help of the wonderful dmenu. The scripts are
+available here. Set up the scripts in your i3 config:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+bindsym $mod+Shift+g exec $HOME/bin/i3/mark  bindsym $mod+g exec $HOME/bin/i3/goto
+&lt;/pre&gt;
+&lt;p&gt;Now you can tag a window with mod+g and show available tags with
+mod+shift+g. This will look like this:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Setting a mark&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Set Marks" src="images/i3_mark.jpg" /&gt;&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;strong&gt;Searching for a mark&lt;/strong&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;img alt="Go Marks" src="images/i3_jump.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, this gives you a nice dmenu styled application choser,
+which only shows your tagged windows. While jumps are quicker to use,
+marks are simpler, as you dont have to remember which hotkey you
+associated with what application.&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="modes"&gt;
+&lt;h3&gt;Modes&lt;/h3&gt;
+&lt;p&gt;This is a very clever way of having specific tasks in a vim like
+fashion. It 100% integrates into your panel. Basically this gives you
+chained keybindings with a visual clue. i3 comes with one mode by
+default: Resize mode. Hitting the appropriate keybind will show a red
+“Resize” in your bar. This tells you that normal hotkeys won’t work at
+this moment. Instead you can only use defined hotkeys to trigger
+actions. In case of resize mode these are the movement keys to make
+splits/windows smaller/bigger. Pretty neat.&lt;/p&gt;
+&lt;p&gt;I created (stole) myself a custom mode, that prompts the user for logout
+options. Code follows:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+# Create Log out, Reboot, Poweroff bindingsmode &amp;quot;(E)xit, (R)eboot, (P)oweroff&amp;quot; {  bindsym r exec systemctl reboot  bindsym e exit  bindsym p exec systemctl poweroff# back to normal: Enter or Escapebindsym Return mode &amp;quot;default&amp;quot;  bindsym Escape mode &amp;quot;default&amp;quot;  }bindsym $mod+Shift+e mode &amp;quot;(E)xit, (R)eboot, (P)oweroff&amp;quot;
+&lt;/pre&gt;
+&lt;p&gt;When hitting the hotkey (defined in last line) It will enter the mode
+and then the subset of hotkeys (r, e and p) can be used to trigger the
+defined actions. It looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Modes" src="images/i3_menu.jpg" /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="the-panel"&gt;
+&lt;h3&gt;The Panel&lt;/h3&gt;
+&lt;p&gt;i3 comes with the i3-bar. It uses i3-status by default. While not
+particulary bad, its very limited in its usage. It comes with some
+widgets, but I dont need a single one of it. Luckily you can replace
+i3-status with dzen2 or conky or whatever you want to use to get text
+piped. So far nothing special, but i3 does this in a clever way:
+Workspaces and tray will remain visible, even if you disable i3-status.
+This way you can have the best of both worlds. So I simply set up a
+conky setup (which was not trivial, since i3 expects a custom syntax to
+know when a new field in conky begins - at least if you want colors) and
+the result suits me perfectly!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot" src="images/i3-2.jpg" /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="appendix"&gt;
+&lt;h3&gt;Appendix&lt;/h3&gt;
+&lt;p&gt;Another little thing I noticed is, that moving windows (default
+mod+shift+movement keys) will not only change positions of tiled
+windows, but you can also use it to move floating windows across the
+screen, without the mouse. Havent seen this in other tilers yet, tho i
+never tried :)&lt;/p&gt;
+&lt;p&gt;Finally, here my config: i3 config:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+#x This file has been auto-generated by i3-config-wizard(1)
+# It will not be overwritten, so edit it as you like.
+#
+# Should you change your keyboard layout somewhen, delete
+# this file and re-run i3-config-wizard(1).
+#
+
+# i3 config file (v4)
+#
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+set $mod Mod4
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below. ISO 10646 = Unicode
+font pango:Envy Code R 10
+# The font above is very space-efficient, that is, it looks good, sharp and
+# clear in small sizes. However, if you need a lot of unicode glyphs or
+# right-to-left text rendering, you should instead use pango for rendering and
+# chose an xft font, such as:
+#font xft:DejaVu Sans Mono 10
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec --no-startup-id termite /bin/zsh --role=roxterm
+bindsym $mod+Shift+Return exec --no-startup-id termite /bin/zsh --role=termrox
+# start ssh session
+bindsym $mod+Shift+s exec --no-startup-id termite --role=ssh -e karif
+#teiler
+bindsym Print exec $HOME/bin/teiler
+
+# kill focused window
+bindsym $mod+k kill
+
+# start dmenu (a program launcher)
+bindsym $mod+p exec dmenu_run -nb &amp;quot;#000000&amp;quot; -nf &amp;quot;#a0a0a0&amp;quot; -sb &amp;quot;#0C73C2&amp;quot; -sf &amp;quot;#ffffff&amp;quot; -fn 'Source Code Pro-12'
+
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindcode $mod+d focus child
+
+# switch to workspace
+bindsym $mod+1 workspace 1:terms
+bindsym $mod+2 workspace 2:www
+bindsym $mod+3 workspace 3:stuff
+bindsym $mod+4 workspace 4:media
+bindsym $mod+5 workspace 5:torrent
+bindsym $mod+6 workspace 6:gfx
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace NOTAG
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1:terms
+bindsym $mod+Shift+2 move container to workspace 2:www
+bindsym $mod+Shift+3 move container to workspace 3:stuff
+bindsym $mod+Shift+4 move container to workspace 4:media
+bindsym $mod+Shift+5 move container to workspace &amp;quot;5:torrent&amp;quot;
+bindsym $mod+Shift+6 move container to workspace 6:gfx
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace NOTAG
+
+# Scratchpad hotkeys:
+
+
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+# Show the sup-mail scratchpad window, if any.
+bindsym $mod+Mod1+1 [class=&amp;quot;mplayer2&amp;quot;] scratchpad show
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+y exec &amp;quot;i3-nagbar -t warning -m 'Choose:' -b 'Exit i3' 'i3-msg exit' -b 'Reboot' 'i3-msg exec systemctl reboot' -b 'Poweroff' 'i3-msg exec systemctl poweroff'&amp;quot;
+
+# Create Log out, Reboot, Poweroff bindings
+mode &amp;quot;(E)xit, (R)eboot, (P)oweroff&amp;quot; {
+        bindsym r exec systemctl reboot
+        bindsym e exit
+        bindsym p exec systemctl poweroff
+
+        # back to normal: Enter or Escape
+        bindsym Return mode &amp;quot;default&amp;quot;
+        bindsym Escape mode &amp;quot;default&amp;quot;
+}
+
+bindsym $mod+Shift+e mode &amp;quot;(E)xit, (R)eboot, (P)oweroff&amp;quot;
+
+# resize window (you can also use the mouse for that)
+mode &amp;quot;resize&amp;quot; {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym odiaeresis resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode &amp;quot;default&amp;quot;
+        bindsym Escape mode &amp;quot;default&amp;quot;
+}
+
+bindsym $mod+r mode &amp;quot;resize&amp;quot;
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+colors {
+        background #000000
+        statusline #ffffff
+
+        focused_workspace  #0C73C2 #0C73C2 #ffffff #000000
+        active_workspace   #0C73C2 #0C73C2 #ffffff #000000
+        inactive_workspace #333333 #222222 #888888
+        urgent_workspace   #2f343a #900000 #ffffff
+}
+        status_command $HOME/bin/conky-i3bar
+        position top
+#        mode hide
+}
+
+# colors
+#client.focused.border     #ffffff #ffffff
+client.focused            #0C73C2 #0C73C2 #ffffff #0C73C2
+
+client.background         #000000
+#client.focused.background #000000
+new_window pixel 2
+popup_during_fullscreen smart
+
+force_display_urgency_hint 500 ms
+
+
+# rules
+assign [class=&amp;quot;Aurora|Firefox|Navigator|Opera|Chromium|dwb&amp;quot;] 2:www
+assign [class=&amp;quot;Spacefm&amp;quot;] 3:stuff
+assign [class=&amp;quot;Transmission-remote-gtk&amp;quot;] 5:torrent
+assign [class=&amp;quot;Keepassx&amp;quot;] 9
+assign [class=&amp;quot;Spotify&amp;quot;] 4:media
+assign [instance=&amp;quot;roxterm&amp;quot;] 1:terms
+assign [class=&amp;quot;Gimp&amp;quot;] 6:gfx
+
+#window rules
+for_window [class=&amp;quot;^xv|mplayer2|Steam|Wine&amp;quot;] floating enable
+for_window [title=&amp;quot;PlayOnLinux&amp;quot;] floating enable
+
+##jump commands
+
+#focus ssh window
+bindsym $mod+F1 [instance=&amp;quot;ssh&amp;quot;] focus
+
+#mark
+for_window [instance=&amp;quot;ssh&amp;quot;] mark karif
+for_window [class=&amp;quot;Aurora|Firefox|Navigator|Chromium&amp;quot;] mark browser
+
+
+bindsym $mod+Shift+g exec $HOME/bin/i3/mark
+bindsym $mod+g exec $HOME/bin/i3/goto
+
+bindsym $mod+Shift+F9 exec i3-input -F 'mark %s' -l 1 -P 'Mark: '
+bindsym $mod+Tab exec $HOME/bin/i3-windows
+bindsym $mod+Shift+F5 exec translate en
+bindsym $mod+F5 exec translate de
+
+
+### mpd keybindings
+bindsym XF86AudioPlay exec mpc toggle
+bindsym XF86AudioStop exec mpc stop
+bindsym XF86AudioNext exec mpc next
+bindsym XF86AudioPrev exec mpc prev
+bindsym Shift+XF86AudioNext exec mpc seek +5
+bindsym Shift+XF86AudioPrev exec mpc seek -5
+bindsym $mod+Shift+F12 exec --no-startup-id ~/bin/lastfm.sh switch
+bindsym $mod+F12 exec --no-startup-id ~/bin/lastfm.sh check
+bindsym $mod+F11 exec --no-startup-id ~/bin/love
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</summary><category term="windowmanager"></category><category term="linux"></category><category term="tiling"></category><category term="i3wm"></category></entry><entry><title>Fluxbox with manual tiling</title><link href="https://journal.53280.de/fluxbox-with-manual-tiling.html" rel="alternate"></link><updated>2013-01-26T11:00:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2013-01-26:fluxbox-with-manual-tiling.html</id><summary type="html">&lt;hr class="docutils" /&gt;
+&lt;p&gt;So partly because I was bored, partly because subtle doesn’t work very
+well with both qt and gtk3, i decided to fiddle around with fluxbox a
+bit. My goal was to make it behave as closely to my subtle setup as
+possible. Of all the *box WMs I only ever used openbox properly before.
+And while theoretically possible, I soon gave up porting my subtle
+config to it. XML is just such a mess. Really, whoever thought XML is
+suitable for config files is nuts.&lt;/p&gt;
+&lt;p&gt;So back to fluxbox. It turned out that setting it up is very straight
+forward. There are a handful of files you want to look at more closely:&lt;/p&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="fluxbox-init"&gt;
+&lt;h2&gt;~/.fluxbox/init&lt;/h2&gt;
+&lt;p&gt;this file stores the general options, like focus model, enable/disable
+tabs, settings for the internal panel. Most of it is pretty obvious
+stuff.&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="fluxbox-keys"&gt;
+&lt;h2&gt;~/.fluxbox/keys&lt;/h2&gt;
+&lt;p&gt;This is where the fun starts. In this file you set up all your key
+bindings. Nothing special, every WM does this. But there is a but.
+Fluxbox has some unique ways that make it the optimal choice for my
+plan. So what did I actually want? In my subtle setup I had a few
+hotkeys, that move windows to one of the 4 corners on screen or fill up
+half the screen either horizontally or vertically. MacroCmd to the
+rescue!&lt;/p&gt;
+&lt;p&gt;Of course fluxbox supports positioning windows and resizing windows, but
+what if you want to have both things without strictly tagging windows?
+(to retain flexibility) The solution is actually pretty easy:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+Mod4 KP_1 :MacroCmd {ResizeTo 945 500} {MoveTo 4 4 LowerLeft} {Raise} {Focus}
+&lt;/pre&gt;
+&lt;p&gt;This will move the current window to the upper left corner and resize it
+to fill 25% of my screen. Percentage values are also possible, tho less
+exact. Another thing I had in my subtle setup was the ability to start
+terminal windows instantly at specified areas (matching my grid to move
+windows around) To do this you have to give your terminal a proper name.
+For urxvt you can use the -name argument, for xfce4-terminal –role=foo
+will work. With these unique names we can now tag all windows matching
+those. Which leads us to:&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="fluxbox-apps"&gt;
+&lt;h2&gt;~/.fluxbox/apps&lt;/h2&gt;
+&lt;p&gt;the apps file is very simple to use. Lets see an example:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+[app] (role=term_top_left) [Dimensions] {945 500} [Position] (UPPERLEFT) {4 4}[Workspace] {0} [Deco] {BORDER} [Alpha] {245 230} [end]
+&lt;/pre&gt;
+&lt;p&gt;Pretty obvious, once you have seen it. The last line is particulary
+interesting tho: It sets transparency values based based on active state
+of the window. I don’t know any other WM that has such an option. Pretty
+neat if you want some eyecandy! Apart from this the apps file normally
+is used to simply set a workspace for an application. Unlike subtle,
+fluxbox never forces the workspace tho, you are free to move your
+windows everytime. Anyway, basic setup was complete, now all that was
+left was to clone subtle’s panel, which seemed like an impossible task.
+Fluxbox internal panel is far too limited, so I gave xfce4-panel another
+try - and was surprised how good you can make it look - using more or
+less nothing but generic command widgets :) Fluxbox doesn’t work too
+well with xfce4-panel, maximized windows will cover it. Luckily I found
+a patch that works around this. For your convinience, here it is:&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://dl.53280.de/fluxbox-wm-strut-partial.patch"&gt;patch&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="mandatory-screenshot"&gt;
+&lt;h2&gt;Mandatory Screenshot&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="Screenshot" src="https://blog.53280.de/content/images/2014/Jan/fluxbox_shot.png" /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="linux"></category><category term="windowmanager"></category><category term="tiling"></category><category term="fluxbox"></category></entry></feed>

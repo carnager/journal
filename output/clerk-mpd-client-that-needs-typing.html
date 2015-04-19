@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Rasi" />
+        <meta name="copyright" content="Rasi" />
+
+
+<meta name="keywords" content="mpd, programming, rofi, mpd, " />
+
+<meta property="og:title" content="clerk - mpd client that needs typing "/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="./clerk-mpd-client-that-needs-typing.html" />
+<meta property="og:description" content="clerk - mpd client on steroids" />
+<meta property="og:site_name" content="POKE 53280,0" />
+<meta property="og:article:author" content="Rasi" />
+<meta property="og:article:published_time" content="2014-08-09T10:36:00+02:00" />
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="clerk - mpd client that needs typing ">
+<meta name="twitter:description" content="clerk - mpd client on steroids">
+
+        <title>clerk - mpd client that needs typing  · POKE 53280,0
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+        <link href="https://journal.53280.de/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="POKE 53280,0 - Full Atom Feed" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>POKE 53280,0</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href=".">Home</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="./clerk-mpd-client-that-needs-typing.html"> clerk - mpd client that needs typing  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            
+            <h2 id="history">History</h2>
+<p>Back in march I wrote about <a href="./mpdMenu.html">mpdMenu</a>.
+It basically used mpc and dmenu to create lists of albums/files that were displayed
+in dmenu. It had some nice features like rating albums/tracks but to be honest it
+seemed a little rough around the edges.</p>
+<p>Those times are over now. mpdMenu is history. Long live clerk.
+clerk is basically the same thing as mpdMenu was, but it's presented in a much
+nicer way.
+I cleaned up the whole menu structure and i think it looks rather nice now.
+But let's see what clerk can actually do.</p>
+<h2 id="features">Features</h2>
+<p>Let's first have a look at the main menu.</p>
+<h3 id="the-main-menu">The Main Menu</h3>
+<p><img alt="Pelican" src="/images/clerk-main.jpg" /></p>
+<p>Nothing too exciting here. Play a random album, play random tracks.
+The number of tracks can be configured in the options menu, which we will
+look at later.</p>
+<h3 id="browsing">Browsing</h3>
+<h4 id="current-artist">Current Artist</h4>
+<p>The next section covers actual browsing functionality. The current artist menu
+allows you to browse all albums or tracks by the artist currently playing in mpd.</p>
+<p><img alt="Current Artist" src="/images/clerk-current-artist.jpg" /></p>
+<p>Do you see the section that says "Adding Mode: Add"?
+Clicking this will change the Mode to either "Insert" or "Replace" so you can
+decide how the actual album will be handled in the queue.</p>
+<h4 id="current-queue">Current Queue</h4>
+<p>The Current Queue menu will show what it says: mpd's current queue.
+It has 2 modes: Play and Delete. Play will simply change playback to the
+chosen song, whereas Delete will remove items from the queue.</p>
+<p><img alt="Queue" src="/images/clerk-queue.jpg" /></p>
+<h4 id="manage-playlists">Manage Playlists</h4>
+<p>The Manage Playlists menu allows you to save, crop and clear the current
+playlist - or load an already saved one. It will ask for a filename and
+even warn you if the playlist already exists.</p>
+<p><img alt="Save Playlist" src="/images/clerk-playlist-save.jpg" /></p>
+<p>In addition to this, you will find options to load an RSS Feed
+(those should be manually put in a file called podcasts in clerk's config directory)</p>
+<p>There are also entries to suspend or resume the current queue.
+This is very handy if you are listening to a podcast and want to continue later.
+Just suspend the playlist, listen to whatever you want and later resume it.
+It will load the state of the playlist and the position of the active track.</p>
+<h3 id="browsing-the-database">Browsing the Database</h3>
+<p>Clerk offers several ways to browse the database.
+First there is the hierarchical browser, which let's you first chose an artist
+and displays all albums related to it. If you chose to browse even deeper
+it will show all tracks of the given album.
+At any point in the library it's possible to add/insert/replace every shown artist/album/track.</p>
+<p>If you use rofi it is even possible to add several songs at once, by hitting Shift+Enter.</p>
+<p><img alt="Hierachical Browser" src="/images/clerk-browser1.jpg" /></p>
+<p>It's also possible to browse the Database by date, list all albums.
+Last but not least clerk can show you all songs in database.
+Each browser can add, insert or replace the results into the queue.</p>
+<p>Speaking of insert mode. This is one thing that most mpd clients get wrong, imho.
+You see, insert in mpd means, that the track will be placed right after the one
+that is currently playing. Which works fine, as long as you are not in random mode.
+For this scenario mpd offers a feature called "Priorities", which can set a weight
+to songs in the playlist. Sounds like a good solution, but the developer of mpd only
+made it available for random mode. In normal playback mode weights are ignored.</p>
+<p>So there are some clients that support priorities. But they seperate it from the "Insert" command.
+Which seems wrong to me, because all in all you always want the same thing, be it in random mode or not:
+Play that goddamn song NEXT.</p>
+<p>Well, this is exactly what clerk does. Insert will always play the selected songs next. No matter what
+mode mpd is in. Nice.</p>
+<h3 id="a-word-about-mpc">A word about mpc</h3>
+<p>For the tracks and album listings I really wanted to have a way to show a nice tag based view.
+Which turned out to be not-easy at all.
+Why is that?
+Well there are actually 2 issues here, which both needed solving.
+First of all mpd does not allow to list albums or tracks in a formatted way.
+This basically means that you have to fetch the whole database with all tags just to display one part
+of the information (in this case either title or album). This is slow. very.
+I worked around this by creating a cache for clerk.
+Clerk will automatically detect if the mpd database has changed since the last time. If it has it will update
+its local cache. No user interaction needed.
+But there was another issue. mpc only knows the listall command (which only sends URIs) - not the listallinfo (which sends tags).</p>
+<p>But I wanted those nice formatted views!</p>
+<p><img alt="Sad Kitten" src="/images/sad-kitten.jpg" /></p>
+<p>So I took the hard road and started developing a python clone of mpc. I simply called mppc (music player python client).
+It's an explicit dependency for clerk and is used in quite some places.
+Not only does it allow for the formatted album/track view, but it also adds readcomments support to clerk, a feature mpd offers
+for nearly a year now, but I havent seen a single client using it. With readcomments it's possible to show ALL tags of a file.</p>
+<p>But let's see what's left to show.</p>
+<h3 id="the-options-dialog">The options dialog</h3>
+<p><img alt="Options Dialog" src="/images/clerk-options.jpg" /></p>
+<p>The options dialog gives you all options you would expect in a mpd client.
+You can change all modes, enable/disable outputs, set crossfade or toggle replaygain.
+In addition it's possible to start/stop mpdscribble. This works for either local
+or remote mpdscribbles (set in config file). Right now it kills or start mpdscribble.
+Hopefully mpdscribble will receive an option to suspend scrobbling itself via the
+client protocol. We will see :)</p>
+<h3 id="ratings">Ratings</h3>
+<p><strong><em> UPDATE </em></strong></p>
+<p>The ratings system is using mpds sticker database now, so ratings work for
+every filetype. Everything else remains the same, flat files for portability.</p>
+<p>One feature in clerk not found elsewhere is the ability to rate albums or tracks.
+Personally I don't do track ratings, but in my tests it worked fine for flac
+and mp3 files. Vorbis files are not yet implemented. It's just a pain to update
+vorbis tags.</p>
+<p>So I will only speak about the albumratings now.
+First of all, ratings need local access to the music directory.
+I wanted a way that is 100% portable and absolutely NOT tied to a musicplayer.
+This rules out mpd's sticker database, which seems hardly maintained anyway.
+Tags would be another obvious choice, but it's still not accessible enough for my taste.
+So the way I created ratings is by saving a ratings file to the album folder.
+That's all. A tiny text file containing the actual rating in the first line
+and some basic information (artist, date, album) afterwards.</p>
+<p>Clerk can even load albums by ratings. To make this happen I use bash's globbing mode
+which can very fast wander through the filesystem. Then I only need to grep for ratings in all text files
+and voila: It works.</p>
+<p><img alt="Ratings" src="/images/clerk-rating.jpg" /></p>
+<h3 id="mildly-related">Mildly related</h3>
+<p>I already wrote about <a href="./albumlist_creator.html">musiclist.py</a>
+This little script uses the ratings file and mpd itself to create a nice table of all albums, including
+ratings. Thanks to thor77 this now shows some very nice Stars instead of plain numbers.
+You can see the result here: <a href="https://list.53280.de">musiclist</a></p>
+<h3 id="the-rest">The rest</h3>
+<p>Apart from those features clerk offers basic controls (Play, Stop, Next, Prev, Clear) and lookup of
+lyrics, artists, albums (using surfraw).</p>
+<p>Last but not least every single dialog is available via cli arguments to quickly bind your favorite features to
+hotkeys. See all available arguments with <code>clerk -h</code></p>
+<p>If you want to try it out, you can find it on github, together with mppc:<br />
+<a href="https://github.com/carnager">github</a></p>
+<p>To get the most out of it, you really should get the excellent rofi tool by DaveDavenport:<br />
+<a href="https://github.com/DaveDavenport/rofi">rofi</a></p>
+            
+            
+            <hr/>
+<section>
+    <h2>Related Posts</h2>
+<ul class="related-posts-list">
+<li><a href="./mpdMenu.html" title="mpdMenu - mpd on stereoids">mpdMenu - mpd on stereoids</a></li>
+<li><a href="./albumlist_creator.html" title="Create html list of all your albums">Create html list of all your albums</a></li>
+<li><a href="./mpd.html" title="Grouping VA albums in mpd">Grouping VA albums in mpd</a></li>
+</ul>
+<hr />
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2014-08-09T10:36:00+02:00">Aug 9, 2014</time>
+            <h4>Category</h4>
+            <a class="category-link" href="./categories.html#rofi-mpd-ref">rofi, mpd</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="./tags.html#mpd-ref">mpd
+                    <span>4</span>
+</a></li>
+                <li><a href="./tags.html#programming-ref">programming
+                    <span>1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="https://last.fm/user/rasi_x" title="My lastfm Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-lastfm sidebar-social-links"></i></a>
+    <a href="irc://irc.freenode.net/archlinux.de" title="My irc Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-irc sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="https://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+</html>

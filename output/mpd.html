@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Rasi" />
+        <meta name="copyright" content="Rasi" />
+
+
+<meta name="keywords" content="MPD, linux, tagging, computer, " />
+
+<meta property="og:title" content="Grouping VA albums in mpd "/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="./mpd.html" />
+<meta property="og:description" content="the key is proper tagging..." />
+<meta property="og:site_name" content="POKE 53280,0" />
+<meta property="og:article:author" content="Rasi" />
+<meta property="og:article:published_time" content="2014-12-25T12:40:00+01:00" />
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Grouping VA albums in mpd ">
+<meta name="twitter:description" content="the key is proper tagging...">
+
+        <title>Grouping VA albums in mpd  · POKE 53280,0
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+        <link href="https://journal.53280.de/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="POKE 53280,0 - Full Atom Feed" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>POKE 53280,0</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href=".">Home</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="./mpd.html"> Grouping VA albums in mpd  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            
+            <h2 id="the-issue">The issue</h2>
+<p>Every once in a while some user joins #mpd and asks how albums with
+several artists can be grouped together instead of displaying each artist
+individually in library.
+And while I agree that this is annoying, their assumptions are wrong.
+They assume this is a player issue, while in reality it's caused by missing
+tags in the music files.</p>
+<p><img alt="Messed up Compilation album" src="/images/missing_tags1.jpg" /></p>
+<h2 id="say-hello-to-the-albumartist-tag">Say hello to the albumartist tag</h2>
+<p>The solution is in fact relatively simple. The artist tag that everyone knows
+just represents the artist for the current title.
+There is another artist tag, called "albumartist", which represents the artist
+of the album.</p>
+<h2 id="wrong-usage-of-albumartist-a-common-problem">Wrong usage of albumartist - a common problem</h2>
+<p>Many users know the albumartist tag, but only tag their Multi-artist albums
+accordingly. This is wrong, because for this to work, the music player has to
+make exceptions what to do with files that don't have an albumartist tag.</p>
+<p>You see: EVERY album has a global artist. It just happens to be the same artist
+for all tracks on regular albums. It's still a album-related artist.</p>
+<p>Long story short: Every album needs an albumartist tag. For regular albums
+the albumartist tag is the same as the artist tag.
+For multi-artist releases it can be something like "Various Artists" or "Soundtrack"</p>
+<h2 id="i-have-thousands-of-albums-how-to-sort-this-mess">I have thousands of albums, how to sort this mess?</h2>
+<p>Don't worry, the process of fixing your files is a short one. It's a 2 step
+process.</p>
+<h3 id="1-fixing-of-your-multi-artist-releases">1. Fixing of your multi-artist releases.</h3>
+<p>First step is to get a tagger, for this example I use the excellent picard tagger.
+Install it from your repository.
+Now load all your multi-artist albums into it, by simply dragging the folders
+on picards window.</p>
+<p>When all files were properly added, select them all and watch the lower part
+of picards window.
+As you can see my files already have the albumartist tag. If you have such a line
+too, simply click in the right column and give it a name (e.g. Various Artists)</p>
+<p><img alt="Adding albumartist tag in picard" src="/images/picard.jpg" /></p>
+<p>If no "Album Artist" line is visible right click and chose "Add New Tag"
+type "albumartist" and fill the value as above.</p>
+<p>Now make sure that "Move Files" and "Rename Files" is disabled in the Options
+menu on top.</p>
+<p>Finally hit save. You have successfully fixed your Multi-Artist albums.</p>
+<h3 id="2-fix-your-regular-albums">2. Fix your regular albums</h3>
+<p>But remember, all albums need an albumartist tag. Luckily ncmpcpp has a little
+tool to fix this automatically for you, but we need to build it.</p>
+<p>Open a terminal.
+Create an empty directory and cd into it.
+run these commands:</p>
+<div class="highlight"><pre>wget http://repo.or.cz/w/ncmpcpp.git/blob_plain/HEAD:/extras/Makefile
+wget http://repo.or.cz/w/ncmpcpp.git/blob_plain/HEAD:/extras/artist_to_albumartist.cpp
+make
+</pre></div>
+
+
+<p>This will build a little programm, called artist_to_albumartist, that you can find
+in the same directory now. To use it simply run this command:</p>
+<div class="highlight"><pre>find /PATH/TO/YOUR/MUSIC \( -name &quot;*.flac&quot; -o -name &quot;*.mp3&quot; -o -name &quot;*.ogg&quot; \) -exec ./artist_to_albumartist {} \;
+</pre></div>
+
+
+<p>Replace /PATH/TO/YOUR/MUSIC with your actual music root.
+This will copy the artist tag of all files to the albumartist tag, skipping those files
+that already have one (aka the multi-artist releases we fixed earlier)</p>
+<p>Finally to make ncmpcpp use this new tag add this to your ~/.ncmpcpp/config file:</p>
+<div class="highlight"><pre>media_library_primary_tag = &quot;album_artist&quot;
+</pre></div>
+
+
+<h2 id="result">Result</h2>
+<p>See the same track from first image properly grouped under its album:</p>
+<p><img alt="Fixed Compilation album" src="/images/fixed_tags.jpg" /></p>
+            
+            
+            <hr/>
+<section>
+    <h2>Related Posts</h2>
+<ul class="related-posts-list">
+<li><a href="./fluxbox-with-manual-tiling.html" title="Fluxbox with manual tiling">Fluxbox with manual tiling</a></li>
+<li><a href="./another-month-another-window-manager.html" title="Another Month - Another Window Manager">Another Month - Another Window Manager</a></li>
+<li><a href="./herbstluftwm.html" title="Herbstluftwm">Herbstluftwm</a></li>
+<li><a href="./mpdMenu.html" title="mpdMenu - mpd on stereoids">mpdMenu - mpd on stereoids</a></li>
+<li><a href="./albumlist_creator.html" title="Create html list of all your albums">Create html list of all your albums</a></li>
+</ul>
+<hr />
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2014-12-25T12:40:00+01:00">Dec 25, 2014</time>
+            <h4>Category</h4>
+            <a class="category-link" href="./categories.html#computer-ref">computer</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="./tags.html#linux-ref">linux
+                    <span>6</span>
+</a></li>
+                <li><a href="./tags.html#mpd-ref">MPD
+                    <span>4</span>
+</a></li>
+                <li><a href="./tags.html#tagging-ref">tagging
+                    <span>1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="https://last.fm/user/rasi_x" title="My lastfm Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-lastfm sidebar-social-links"></i></a>
+    <a href="irc://irc.freenode.net/archlinux.de" title="My irc Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-irc sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="https://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+</html>

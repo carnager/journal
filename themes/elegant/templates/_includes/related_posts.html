@@ -1,0 +1,19 @@
+{% if article.related_posts %}
+{% from '_includes/_defaults.html' import RELATED_POSTS_LABEL with context %}
+<section>
+    <h2>{{ RELATED_POSTS_LABEL }}</h2>
+<ul class="related-posts-list">
+{% for related_post in article.related_posts|sort(attribute = 'date') %}
+    {% set title = related_post.title|striptags %}
+    {% set htitle = title %}
+    {%if related_post.subtitle %}
+        {% set htitle = title + ' - ' + related_post.subtitle %}
+        {% set title = title + ' ' +  '<small>' + related_post.subtitle + '</small>' %}
+    {% endif %}
+<li><a href="{{ SITEURL }}/{{ related_post.url }}" title="{{ htitle }}">{{ title }}</a></li>
+{% endfor %}
+</ul>
+<hr />
+</section>
+{% endif %}
+

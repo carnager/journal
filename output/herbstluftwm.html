@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Rasi" />
+        <meta name="copyright" content="Rasi" />
+
+
+<meta name="keywords" content="windowmanager, linux, tiling, herbstluftwm, computer, " />
+
+<meta property="og:title" content="Herbstluftwm "/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="./herbstluftwm.html" />
+<meta property="og:description" content="In my neverending journey to find the optimal windowmanager, I finally ended up trying herbstluftwm, which i wanted to give a shot for ages. Turned out to be a good choice. But wait. What makes herbstluftwm different from the gazillion other windowmanagers out there? Let's dive into it. The ..." />
+<meta property="og:site_name" content="POKE 53280,0" />
+<meta property="og:article:author" content="Rasi" />
+<meta property="og:article:published_time" content="2013-06-05T10:00:00+02:00" />
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Herbstluftwm ">
+<meta name="twitter:description" content="In my neverending journey to find the optimal windowmanager, I finally ended up trying herbstluftwm, which i wanted to give a shot for ages. Turned out to be a good choice. But wait. What makes herbstluftwm different from the gazillion other windowmanagers out there? Let's dive into it. The ...">
+
+        <title>Herbstluftwm  · POKE 53280,0
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+        <link href="https://journal.53280.de/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="POKE 53280,0 - Full Atom Feed" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>POKE 53280,0</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href=".">Home</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="./herbstluftwm.html"> Herbstluftwm  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            
+            <p>In my neverending journey to find the optimal windowmanager, I finally
+ended up trying herbstluftwm, which i wanted to give a shot for ages.</p>
+<p>Turned out to be a good choice. But wait. What makes herbstluftwm
+different from the gazillion other windowmanagers out there? Let's dive
+into it.</p>
+<hr class="docutils" />
+<div class="section" id="the-config-file">
+<h2>The config file...</h2>
+<p>...which really is no config file at all. You see, in herbstluftwm
+everything is done through a helper binary called herbstclient. You want
+to resize a window? You call something like</p>
+<div class="highlight"><pre>herbstclient resize right +0.05
+</pre></div>
+<p>The same thing applies to every other possible action. So the config
+file is really just a set of herbstclient commands that sets the initial
+state of the windowmanager. This includes things like number of
+workspaces (and names for them too), layout for individual workspaces,
+placement rules for applications, as well as theming and keybindings.</p>
+<p>Here is my example config file (which is appropriately called
+&quot;autostart&quot;):</p>
+<div class="highlight"><pre><span class="c">#!/bin/bash</span>
+
+<span class="c"># this is a simple config for herbstluftwm</span>
+
+<span class="k">function</span> hc<span class="o">()</span> <span class="o">{</span>
+herbstclient <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+
+hc emit_hook reload
+
+<span class="c">#xsetroot -solid &#39;#5A8E3A&#39;</span>
+
+
+<span class="c"># remove all existing keybindings</span>
+hc keyunbind --all
+
+<span class="c"># keybindings</span>
+<span class="nv">Mod</span><span class="o">=</span>Mod4
+hc keybind <span class="nv">$Mod</span>-z floating toggle
+hc keybind <span class="nv">$Mod</span>-Shift-q quit
+hc keybind <span class="nv">$Mod</span>-Shift-r reload
+hc keybind <span class="nv">$Mod</span>-k close
+hc keybind <span class="nv">$Mod</span>-Return spawn termite --role<span class="o">=</span>term /bin/zsh
+hc keybind <span class="nv">$Mod</span>-Shift-Return spawn termite /bin/zsh
+hc keybind Print spawn teiler
+hc keybind <span class="nv">$Mod</span>-Shift-s spawn termite --role<span class="o">=</span>ssh -e karif
+hc keybind <span class="nv">$Mod</span>-Shift-F12 spawn lastfm.sh switch
+hc keybind <span class="nv">$Mod</span>-F12 spawn lastfm.sh check
+hc keybind <span class="nv">$Mod</span>-Shift-F11 spawn love
+hc keybind <span class="nv">$Mod</span>-Tab spawn simpleswitcher -now
+
+hc keybind <span class="nv">$Mod</span>-p spawn dmenu_run
+
+<span class="c"># tags</span>
+<span class="nv">TAG_NAMES</span><span class="o">=(</span> <span class="o">{</span>terms,www,stuff,media,dl,gfx<span class="o">}</span> <span class="o">)</span>
+<span class="nv">TAG_KEYS</span><span class="o">=(</span> <span class="o">{</span>1..9<span class="o">}</span> <span class="m">0</span> <span class="o">)</span>
+
+hc rename default <span class="s2">&quot;</span><span class="si">${</span><span class="nv">TAG_NAMES</span><span class="p">[0]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">||</span> <span class="nb">true</span>
+<span class="k">for</span> i in <span class="si">${</span><span class="p">!TAG_NAMES[@]</span><span class="si">}</span> <span class="p">;</span> <span class="k">do</span>
+    hc add <span class="s2">&quot;</span><span class="si">${</span><span class="nv">TAG_NAMES</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="nv">key</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TAG_KEYS</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> ! <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$key</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
+        hc keybind <span class="s2">&quot;</span><span class="nv">$Mod</span><span class="s2">-</span><span class="nv">$key</span><span class="s2">&quot;</span>       use  <span class="s2">&quot;</span><span class="si">${</span><span class="nv">TAG_NAMES</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        hc keybind <span class="s2">&quot;</span><span class="nv">$Mod</span><span class="s2">-Shift-</span><span class="nv">$key</span><span class="s2">&quot;</span> move <span class="s2">&quot;</span><span class="si">${</span><span class="nv">TAG_NAMES</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">fi</span>
+<span class="k">done</span>
+
+<span class="c"># cycle through tags</span>
+hc keybind <span class="nv">$Mod</span>-period use_index +1 --skip-visible
+hc keybind <span class="nv">$Mod</span>-comma  use_index -1 --skip-visible
+hc keybind <span class="nv">$Mod</span>-Right focus right
+hc keybind <span class="nv">$Mod</span>-Left focus left
+hc keybind <span class="nv">$Mod</span>-Up focus up
+hc keybind <span class="nv">$Mod</span>-Down focus down
+hc keybind <span class="nv">$Mod</span>-Shift-Right <span class="nb">shift </span>right
+hc keybind <span class="nv">$Mod</span>-Shift-Left <span class="nb">shift </span>left
+hc keybind <span class="nv">$Mod</span>-Shift-Up <span class="nb">shift </span>up
+hc keybind <span class="nv">$Mod</span>-Shift-Down <span class="nb">shift </span>down
+
+<span class="c"># layouting</span>
+hc keybind <span class="nv">$Mod</span>-r remove
+hc keybind <span class="nv">$Mod</span>-space cycle_layout 1
+hc keybind <span class="nv">$Mod</span>-v split vertical 0.5
+hc keybind <span class="nv">$Mod</span>-h split horizontal 0.5
+hc keybind <span class="nv">$Mod</span>-Shift-v split vertical 0.3
+hc keybind <span class="nv">$Mod</span>+Shift+h split horizontal 0.3
+hc keybind <span class="nv">$Mod</span>-s floating toggle
+hc keybind <span class="nv">$Mod</span>-f fullscreen toggle
+hc keybind <span class="nv">$Mod</span>-Shift-p pseudotile toggle
+
+<span class="c"># resizing</span>
+<span class="nv">RESIZESTEP</span><span class="o">=</span>0.05
+hc keybind <span class="nv">$Mod</span>-Control-Left resize left +<span class="nv">$RESIZESTEP</span>
+hc keybind <span class="nv">$Mod</span>-Control-Down resize down +<span class="nv">$RESIZESTEP</span>
+hc keybind <span class="nv">$Mod</span>-Control-Up resize up +<span class="nv">$RESIZESTEP</span>
+hc keybind <span class="nv">$Mod</span>-Control-Right resize right +<span class="nv">$RESIZESTEP</span>
+
+<span class="c"># mouse</span>
+hc mouseunbind --all
+hc mousebind <span class="nv">$Mod</span>-Button1 move
+hc mousebind <span class="nv">$Mod</span>-Button2 resize
+hc mousebind <span class="nv">$Mod</span>-Button3 zoom
+
+<span class="c"># focus</span>
+hc keybind <span class="nv">$Mod</span>-BackSpace   cycle_monitor
+<span class="c">#hc keybind $Mod-Tab         cycle_all +1</span>
+<span class="c">#hc keybind $Mod-Shift-Tab   cycle_all -1</span>
+hc keybind <span class="nv">$Mod</span>-c cycle
+hc keybind <span class="nv">$Mod</span>-i jumpto urgent
+hc keybind <span class="nv">$Mod</span>-KP_Left <span class="nb">shift </span>left
+hc keybind <span class="nv">$Mod</span>-KP_Down <span class="nb">shift </span>down
+hc keybind <span class="nv">$Mod</span>-KP_Right <span class="nb">shift </span>right
+hc keybind <span class="nv">$Mod</span>-KP_Up <span class="nb">shift </span>up
+
+<span class="c"># colors</span>
+hc <span class="nb">set </span>frame_border_active_color <span class="s1">&#39;#82B414&#39;</span>
+hc <span class="nb">set </span>frame_border_normal_color <span class="s1">&#39;#0c0d0e&#39;</span>
+hc <span class="nb">set </span>frame_bg_normal_color <span class="s1">&#39;#121212&#39;</span>
+hc <span class="nb">set </span>frame_active_opacity 90
+hc <span class="nb">set </span>frame_normal_opacity 70
+hc <span class="nb">set </span>frame_bg_active_color <span class="s1">&#39;#121212&#39;</span>
+hc <span class="nb">set </span>frame_bg_transparent 0
+hc <span class="nb">set </span>frame_border_width 1
+hc <span class="nb">set </span>window_border_width 1
+hc <span class="nb">set </span>window_border_inner_width 3
+hc <span class="nb">set </span>window_border_normal_color <span class="s1">&#39;#454545&#39;</span>
+hc <span class="nb">set </span>window_border_active_color <span class="s1">&#39;#0c73c2&#39;</span>
+hc <span class="nb">set </span>always_show_frame 1
+hc <span class="nb">set </span>frame_gap 2
+<span class="c"># add overlapping window borders</span>
+hc <span class="nb">set </span>window_gap 2
+hc <span class="nb">set </span>frame_padding 0
+hc <span class="nb">set </span>smart_window_surroundings 1
+
+hc <span class="nb">set </span>smart_frame_surroundings 1
+hc <span class="nb">set </span>mouse_recenter_gap 0
+hc <span class="nb">set </span>focus_follows_mouse 1
+hc <span class="nb">set </span>raise_on_focus 1
+hc pad <span class="m">5</span> <span class="m">5</span> <span class="m">5</span> <span class="m">5</span> 5
+
+<span class="c"># rules</span>
+hc unrule -F
+<span class="c">#hc rule class=XTerm tag=3 # move all xterms to tag 3</span>
+hc rule <span class="nv">focus</span><span class="o">=</span>on <span class="c"># normally do not focus new clients</span>
+<span class="c"># give focus to most common terminals</span>
+hc rule class~<span class="s1">&#39;(.*[Rr]xvt.*|.*[Tt]erm|Konsole)&#39;</span> <span class="nv">focus</span><span class="o">=</span>on
+hc rule windowtype~<span class="s1">&#39;_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)&#39;</span> <span class="nv">pseudotile</span><span class="o">=</span>on
+hc rule <span class="nv">windowtype</span><span class="o">=</span><span class="s1">&#39;_NET_WM_WINDOW_TYPE_DIALOG&#39;</span> <span class="nv">focus</span><span class="o">=</span>on
+hc rule windowtype~<span class="s1">&#39;_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK)&#39;</span> <span class="nv">manage</span><span class="o">=</span>off
+hc rule <span class="nv">class</span><span class="o">=</span>Firefox <span class="nv">tag</span><span class="o">=</span>www
+hc rule <span class="nv">windowrole</span><span class="o">=</span>term <span class="nv">tag</span><span class="o">=</span>terms
+hc rule <span class="nv">windowrole</span><span class="o">=</span>ssh <span class="nv">tag</span><span class="o">=</span>terms
+
+<span class="c"># unlock, just to be sure</span>
+hc unlock
+
+herbstclient <span class="nb">set </span>tree_style <span class="s1">&#39;╾│ ├└╼─┐&#39;</span>
+
+<span class="c"># do multi monitor setup here, e.g.:</span>
+<span class="c"># hc set_monitors 1280x1024+0+0 1280x1024+1280+0</span>
+<span class="c"># or simply:</span>
+<span class="c"># hc detect_monitors</span>
+
+<span class="c"># find the panel</span>
+<span class="nv">panel</span><span class="o">=</span>~/.config/herbstluftwm/panel.sh
+<span class="o">[</span> -x <span class="s2">&quot;</span><span class="nv">$panel</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="nv">panel</span><span class="o">=</span>/etc/xdg/herbstluftwm/panel.sh
+<span class="k">for</span> monitor in <span class="k">$(</span>herbstclient list_monitors <span class="p">|</span> cut -d: -f1<span class="k">)</span> <span class="p">;</span> <span class="k">do</span>
+<span class="c"># start it on each monitor</span>
+<span class="nv">$panel</span> <span class="nv">$monitor</span> <span class="p">&amp;</span>
+<span class="k">done</span>
+
+<span class="c"># GIMP</span>
+<span class="c"># ensure there is a gimp tag</span>
+hc load gfx <span class="s1">&#39;</span>
+<span class="s1">(split horizontal:0.850000:0</span>
+<span class="s1">  (split horizontal:0.200000:1</span>
+<span class="s1">    (clients vertical:0)</span>
+<span class="s1">    (clients grid:0))</span>
+<span class="s1">   (clients vertical:0))</span>
+<span class="s1"> &#39;</span>               <span class="c"># load predefined layout</span>
+<span class="c"># center all other gimp windows on gimp tag</span>
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp <span class="nv">tag</span><span class="o">=</span>gfx <span class="nv">index</span><span class="o">=</span><span class="m">01</span> <span class="nv">pseudotile</span><span class="o">=</span>on
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp windowrole~<span class="s1">&#39;gimp-(image-window|toolbox|dock)&#39;</span> <span class="se">\</span>
+    <span class="nv">pseudotile</span><span class="o">=</span>off
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp <span class="nv">windowrole</span><span class="o">=</span>gimp-toolbox <span class="nv">focus</span><span class="o">=</span>off <span class="nv">index</span><span class="o">=</span>00
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp <span class="nv">windowrole</span><span class="o">=</span>gimp-dock <span class="nv">focus</span><span class="o">=</span>off <span class="nv">index</span><span class="o">=</span>1
+
+All the available commands are explained in the manpage of herbstluftwm.
+But the last bit needs some special attention.
+</pre></div>
+</div>
+<hr class="docutils" />
+<div class="section" id="layouts">
+<h2>layouts</h2>
+<p>The nice thing about herbstluftwm, compared to e.g. i3 is that you can
+predefine layouts per workspace. Watch the code again:</p>
+<div class="highlight"><pre><span class="c"># GIMP</span>
+<span class="c"># ensure there is a gimp tag</span>
+hc load gfx <span class="s1">&#39;</span>
+<span class="s1">(split horizontal:0.850000:0</span>
+<span class="s1">  (split horizontal:0.200000:1</span>
+<span class="s1">    (clients vertical:0)</span>
+<span class="s1">    (clients grid:0))</span>
+<span class="s1">   (clients vertical:0))</span>
+<span class="s1"> &#39;</span>               <span class="c"># load predefined layout</span>
+center all other gimp windows on gimp tag
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp <span class="nv">tag</span><span class="o">=</span>gfx <span class="nv">index</span><span class="o">=</span><span class="m">01</span> <span class="nv">pseudotile</span><span class="o">=</span>on
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp windowrole~<span class="s1">&#39;gimp-(image-window|toolbox|dock)&#39;</span> <span class="se">\</span>
+<span class="nv">pseudotile</span><span class="o">=</span>off
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp <span class="nv">windowrole</span><span class="o">=</span>gimp-toolbox <span class="nv">focus</span><span class="o">=</span>off <span class="nv">index</span><span class="o">=</span>00
+hc rule <span class="nv">class</span><span class="o">=</span>Gimp <span class="nv">windowrole</span><span class="o">=</span>gimp-dock <span class="nv">focus</span><span class="o">=</span>off <span class="nv">index</span><span class="o">=</span>1
+</pre></div>
+<p>This makes sure that we create 3 &quot;tiles&quot; on a workspace called &quot;gfx&quot;.
+Then it creates rules based on the gimp windows, so that each gimp
+window will be put into the desired tile. This will result in this:</p>
+<p><img alt="layouts" src="https://blog.53280.de/content/images/2014/Jan/hlwm_layout.png" /></p>
+<p>That's really nice, isn't it? The best part is you don't have to fiddle
+with this by try and error. simply resize your windows the way you want
+them to be and run</p>
+<div class="highlight"><pre>herbstclient dump gfx
+</pre></div>
+<p>where gfx is the workspace name (or tag). This will output the desired
+string which you can either use manually like i did in my gimp example,
+or you use the command:</p>
+<div class="highlight"><pre>herbstclient load <span class="s2">&quot;</span><span class="k">$(</span>cat DUMP_FILE<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<div class="section" id="frames-vs-windows">
+<h2>frames vs. windows</h2>
+<p>The thing about herbstluftwm that is most obviously different from other
+windowmanagers is probably the added layer called &quot;frames&quot;. Where you
+simply tile windows in other windowmanagers, you create frames in
+herbstluftwm. Inside of these frames you finally start your
+applications. Each frame can be tiled individually. This is best
+explained with a screenshot:</p>
+<p><img alt="hlwm" src="https://blog.53280.de/content/images/2014/Jan/hlwm.png" /></p>
+<p>Have a look at the upper right corner. There are 4 terminal windows. The
+active one has a blue border. But look outside of those 4 windows. There
+is another border - green in my case. This marks the frame. Inside of
+this you can have as many open windows as you wish and tile them in
+different ways (splith, splitv, grid, maximized). The terminal window on
+the lower right is another frame. Since its a single window it would
+only receive a green outline when focused. The 2 terminals on the left
+are another frame. This adds a bit of complexibility but is quite
+flexible too.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="panels">
+<h2>panels</h2>
+<p>Another nice thing about hlwm is the way it handles panels. Hlwm has an
+inbuilt margin feature to preserve space for panels. This way I could
+easily make sure that my xfce4-panel works flawlessly. When you watch my
+config file above you probably noticed that it calls a script named
+&quot;panel.sh&quot;. The default panel.sh script sets some variables which are
+finally piped to dzen2. That's rather nice, but it's missing a
+systemtray. In addition to this current dzen2 has a bug which makes
+clickable workspaces non-functional. So i created a very minimal
+panel.sh which only loads my xfce4-panel:</p>
+<div class="highlight"><pre><span class="c">#!/bin/bash</span>
+<span class="nv">monitor</span><span class="o">=</span><span class="si">${</span><span class="nv">1</span><span class="k">:-</span><span class="nv">0</span><span class="si">}</span>
+<span class="nv">panel_height</span><span class="o">=</span>16
+herbstclient pad <span class="nv">$monitor</span> <span class="nv">$panel_height</span>
+</pre></div>
+<p>That's all. xfce4-panel works perfectly, thanks to the &quot;panel_height&quot;
+option.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="floating">
+<h2>floating</h2>
+<p>Most tiling window managers have a special layer for floating windows.
+Windows that float will simply be shown on top of your other windows.
+Herbstluftwm does not know the concept of a special floating layer. It's
+either all floating or all tiled, but you can switch between these modes
+with one keystroke.</p>
+<p>As a workaround herbstluftwm includes a mode called &quot;pseudotile&quot;.
+Applications that are tagged to be pseudotiled (in default config this
+includes all dialogs), will simply be tiled too, but still they are
+floating. kind of. Let's show:</p>
+<p><img alt="pseudotile" src="https://blog.53280.de/content/images/2014/Jan/pseudotile.png" /></p>
+<p>As you can see the dialog is in a regular tile (50% vertical split) but
+still its dimensions are kept. While this works ok for some apps, it
+works bad for others. Luckily a proper floating layer will be added to
+hlwm in the future, but the developers are not sure yet how it will
+look/work in the end.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="conclusion">
+<h2>conclusion</h2>
+<p>Herbstluftwm is a very nice window manager.</p>
+<ul class="simple">
+<li>The configuration is dead easy, a simple bash (perl,python,etc) file
+which calls a bunch of herbstclient commands.</li>
+<li>Little things are taken care of, like the margin feature for panels.</li>
+<li>Did I mention that hlwm supports compositing out of the box? Well, it
+does.</li>
+</ul>
+<p>But the best part: Its constantly being worked on and has several
+contributors, which is a very good sign for a free software project.</p>
+</div>
+
+            
+            
+            <hr/>
+<section>
+    <h2>Related Posts</h2>
+<ul class="related-posts-list">
+<li><a href="./fluxbox-with-manual-tiling.html" title="Fluxbox with manual tiling">Fluxbox with manual tiling</a></li>
+<li><a href="./another-month-another-window-manager.html" title="Another Month - Another Window Manager">Another Month - Another Window Manager</a></li>
+<li><a href="./mpdMenu.html" title="mpdMenu - mpd on stereoids">mpdMenu - mpd on stereoids</a></li>
+<li><a href="./albumlist_creator.html" title="Create html list of all your albums">Create html list of all your albums</a></li>
+<li><a href="./mpd.html" title="Grouping VA albums in mpd">Grouping VA albums in mpd</a></li>
+</ul>
+<hr />
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2013-06-05T10:00:00+02:00">Jun 5, 2013</time>
+            <h4>Category</h4>
+            <a class="category-link" href="./categories.html#computer-ref">computer</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="./tags.html#herbstluftwm-ref">herbstluftwm
+                    <span>1</span>
+</a></li>
+                <li><a href="./tags.html#linux-ref">linux
+                    <span>6</span>
+</a></li>
+                <li><a href="./tags.html#tiling-ref">tiling
+                    <span>3</span>
+</a></li>
+                <li><a href="./tags.html#windowmanager-ref">windowmanager
+                    <span>3</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="https://last.fm/user/rasi_x" title="My lastfm Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-lastfm sidebar-social-links"></i></a>
+    <a href="irc://irc.freenode.net/archlinux.de" title="My irc Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-irc sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="https://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+</html>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>POKE 53280,0</title><link href="https://journal.53280.de/" rel="alternate"></link><link href="https://journal.53280.de/feeds/rofi-mpd.atom.xml" rel="self"></link><id>https://journal.53280.de/</id><updated>2014-08-09T10:36:00+02:00</updated><entry><title>clerk - mpd client that needs typing</title><link href="https://journal.53280.de/clerk-mpd-client-that-needs-typing.html" rel="alternate"></link><updated>2014-08-09T10:36:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-08-09:clerk-mpd-client-that-needs-typing.html</id><summary type="html">&lt;h2 id="history"&gt;History&lt;/h2&gt;
+&lt;p&gt;Back in march I wrote about &lt;a href="https://journal.53280.de/mpdMenu.html"&gt;mpdMenu&lt;/a&gt;.
+It basically used mpc and dmenu to create lists of albums/files that were displayed
+in dmenu. It had some nice features like rating albums/tracks but to be honest it
+seemed a little rough around the edges.&lt;/p&gt;
+&lt;p&gt;Those times are over now. mpdMenu is history. Long live clerk.
+clerk is basically the same thing as mpdMenu was, but it's presented in a much
+nicer way.
+I cleaned up the whole menu structure and i think it looks rather nice now.
+But let's see what clerk can actually do.&lt;/p&gt;
+&lt;h2 id="features"&gt;Features&lt;/h2&gt;
+&lt;p&gt;Let's first have a look at the main menu.&lt;/p&gt;
+&lt;h3 id="the-main-menu"&gt;The Main Menu&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Pelican" src="/images/clerk-main.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Nothing too exciting here. Play a random album, play random tracks.
+The number of tracks can be configured in the options menu, which we will
+look at later.&lt;/p&gt;
+&lt;h3 id="browsing"&gt;Browsing&lt;/h3&gt;
+&lt;h4 id="current-artist"&gt;Current Artist&lt;/h4&gt;
+&lt;p&gt;The next section covers actual browsing functionality. The current artist menu
+allows you to browse all albums or tracks by the artist currently playing in mpd.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Current Artist" src="/images/clerk-current-artist.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Do you see the section that says "Adding Mode: Add"?
+Clicking this will change the Mode to either "Insert" or "Replace" so you can
+decide how the actual album will be handled in the queue.&lt;/p&gt;
+&lt;h4 id="current-queue"&gt;Current Queue&lt;/h4&gt;
+&lt;p&gt;The Current Queue menu will show what it says: mpd's current queue.
+It has 2 modes: Play and Delete. Play will simply change playback to the
+chosen song, whereas Delete will remove items from the queue.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Queue" src="/images/clerk-queue.jpg" /&gt;&lt;/p&gt;
+&lt;h4 id="manage-playlists"&gt;Manage Playlists&lt;/h4&gt;
+&lt;p&gt;The Manage Playlists menu allows you to save, crop and clear the current
+playlist - or load an already saved one. It will ask for a filename and
+even warn you if the playlist already exists.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Save Playlist" src="/images/clerk-playlist-save.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;In addition to this, you will find options to load an RSS Feed
+(those should be manually put in a file called podcasts in clerk's config directory)&lt;/p&gt;
+&lt;p&gt;There are also entries to suspend or resume the current queue.
+This is very handy if you are listening to a podcast and want to continue later.
+Just suspend the playlist, listen to whatever you want and later resume it.
+It will load the state of the playlist and the position of the active track.&lt;/p&gt;
+&lt;h3 id="browsing-the-database"&gt;Browsing the Database&lt;/h3&gt;
+&lt;p&gt;Clerk offers several ways to browse the database.
+First there is the hierarchical browser, which let's you first chose an artist
+and displays all albums related to it. If you chose to browse even deeper
+it will show all tracks of the given album.
+At any point in the library it's possible to add/insert/replace every shown artist/album/track.&lt;/p&gt;
+&lt;p&gt;If you use rofi it is even possible to add several songs at once, by hitting Shift+Enter.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hierachical Browser" src="/images/clerk-browser1.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;It's also possible to browse the Database by date, list all albums.
+Last but not least clerk can show you all songs in database.
+Each browser can add, insert or replace the results into the queue.&lt;/p&gt;
+&lt;p&gt;Speaking of insert mode. This is one thing that most mpd clients get wrong, imho.
+You see, insert in mpd means, that the track will be placed right after the one
+that is currently playing. Which works fine, as long as you are not in random mode.
+For this scenario mpd offers a feature called "Priorities", which can set a weight
+to songs in the playlist. Sounds like a good solution, but the developer of mpd only
+made it available for random mode. In normal playback mode weights are ignored.&lt;/p&gt;
+&lt;p&gt;So there are some clients that support priorities. But they seperate it from the "Insert" command.
+Which seems wrong to me, because all in all you always want the same thing, be it in random mode or not:
+Play that goddamn song NEXT.&lt;/p&gt;
+&lt;p&gt;Well, this is exactly what clerk does. Insert will always play the selected songs next. No matter what
+mode mpd is in. Nice.&lt;/p&gt;
+&lt;h3 id="a-word-about-mpc"&gt;A word about mpc&lt;/h3&gt;
+&lt;p&gt;For the tracks and album listings I really wanted to have a way to show a nice tag based view.
+Which turned out to be not-easy at all.
+Why is that?
+Well there are actually 2 issues here, which both needed solving.
+First of all mpd does not allow to list albums or tracks in a formatted way.
+This basically means that you have to fetch the whole database with all tags just to display one part
+of the information (in this case either title or album). This is slow. very.
+I worked around this by creating a cache for clerk.
+Clerk will automatically detect if the mpd database has changed since the last time. If it has it will update
+its local cache. No user interaction needed.
+But there was another issue. mpc only knows the listall command (which only sends URIs) - not the listallinfo (which sends tags).&lt;/p&gt;
+&lt;p&gt;But I wanted those nice formatted views!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Sad Kitten" src="/images/sad-kitten.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;So I took the hard road and started developing a python clone of mpc. I simply called mppc (music player python client).
+It's an explicit dependency for clerk and is used in quite some places.
+Not only does it allow for the formatted album/track view, but it also adds readcomments support to clerk, a feature mpd offers
+for nearly a year now, but I havent seen a single client using it. With readcomments it's possible to show ALL tags of a file.&lt;/p&gt;
+&lt;p&gt;But let's see what's left to show.&lt;/p&gt;
+&lt;h3 id="the-options-dialog"&gt;The options dialog&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Options Dialog" src="/images/clerk-options.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The options dialog gives you all options you would expect in a mpd client.
+You can change all modes, enable/disable outputs, set crossfade or toggle replaygain.
+In addition it's possible to start/stop mpdscribble. This works for either local
+or remote mpdscribbles (set in config file). Right now it kills or start mpdscribble.
+Hopefully mpdscribble will receive an option to suspend scrobbling itself via the
+client protocol. We will see :)&lt;/p&gt;
+&lt;h3 id="ratings"&gt;Ratings&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt; UPDATE &lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The ratings system is using mpds sticker database now, so ratings work for
+every filetype. Everything else remains the same, flat files for portability.&lt;/p&gt;
+&lt;p&gt;One feature in clerk not found elsewhere is the ability to rate albums or tracks.
+Personally I don't do track ratings, but in my tests it worked fine for flac
+and mp3 files. Vorbis files are not yet implemented. It's just a pain to update
+vorbis tags.&lt;/p&gt;
+&lt;p&gt;So I will only speak about the albumratings now.
+First of all, ratings need local access to the music directory.
+I wanted a way that is 100% portable and absolutely NOT tied to a musicplayer.
+This rules out mpd's sticker database, which seems hardly maintained anyway.
+Tags would be another obvious choice, but it's still not accessible enough for my taste.
+So the way I created ratings is by saving a ratings file to the album folder.
+That's all. A tiny text file containing the actual rating in the first line
+and some basic information (artist, date, album) afterwards.&lt;/p&gt;
+&lt;p&gt;Clerk can even load albums by ratings. To make this happen I use bash's globbing mode
+which can very fast wander through the filesystem. Then I only need to grep for ratings in all text files
+and voila: It works.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Ratings" src="/images/clerk-rating.jpg" /&gt;&lt;/p&gt;
+&lt;h3 id="mildly-related"&gt;Mildly related&lt;/h3&gt;
+&lt;p&gt;I already wrote about &lt;a href="https://journal.53280.de/albumlist_creator.html"&gt;musiclist.py&lt;/a&gt;
+This little script uses the ratings file and mpd itself to create a nice table of all albums, including
+ratings. Thanks to thor77 this now shows some very nice Stars instead of plain numbers.
+You can see the result here: &lt;a href="https://list.53280.de"&gt;musiclist&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="the-rest"&gt;The rest&lt;/h3&gt;
+&lt;p&gt;Apart from those features clerk offers basic controls (Play, Stop, Next, Prev, Clear) and lookup of
+lyrics, artists, albums (using surfraw).&lt;/p&gt;
+&lt;p&gt;Last but not least every single dialog is available via cli arguments to quickly bind your favorite features to
+hotkeys. See all available arguments with &lt;code&gt;clerk -h&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you want to try it out, you can find it on github, together with mppc:&lt;br /&gt;
+&lt;a href="https://github.com/carnager"&gt;github&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To get the most out of it, you really should get the excellent rofi tool by DaveDavenport:&lt;br /&gt;
+&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi&lt;/a&gt;&lt;/p&gt;</summary><category term="mpd"></category><category term="programming"></category></entry></feed>

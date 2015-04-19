@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Rasi" />
+        <meta name="copyright" content="Rasi" />
+
+
+<meta name="keywords" content="MPD, linux, scripting, python, computer, " />
+
+<meta property="og:title" content="Create html list of all your albums "/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="./albumlist_creator.html" />
+<meta property="og:description" content="Python script that creates a html table of all your albums, using python-mpd2" />
+<meta property="og:site_name" content="POKE 53280,0" />
+<meta property="og:article:author" content="Rasi" />
+<meta property="og:article:published_time" content="2014-04-05T14:20:00+02:00" />
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Create html list of all your albums ">
+<meta name="twitter:description" content="Python script that creates a html table of all your albums, using python-mpd2">
+
+        <title>Create html list of all your albums  · POKE 53280,0
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+        <link href="https://journal.53280.de/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="POKE 53280,0 - Full Atom Feed" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>POKE 53280,0</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href=".">Home</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="./albumlist_creator.html"> Create html list of all your albums  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            
+            <h2 id="python-to-the-rescue">Python to the rescue</h2>
+<p>I love my CD collection. I needed months to rip all my CDs into flac format and tagging it all correctly will probably never be finished.
+But what use is the biggest collection if you cannot show off? So I wanted a script that makes a nice html table of my music.
+And ideally it uses MPD since that has an index of my music anyway.</p>
+<p>So I started fiddling with bash and mpc only to find out that mpc is too limited to reach my goal. At least not in a performant way.
+So the aproach I originally took was to use metaflac to scan my collection and create a html table from that.
+This is how it looks:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97</pre></div></td><td class="code"><div class="highlight"><pre><span class="c">#!/bin/bash</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;</span>
+<span class="s1">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;</span>
+<span class="s1">&lt;head&gt;</span>
+<span class="s1">&lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;</span>
+<span class="s1">&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot; /&gt;</span>
+<span class="s1">&lt;title&gt;My Music&lt;/title&gt;</span>
+<span class="s1">&lt;style type=&quot;text/css&quot;&gt;&lt;!--body {font-family:arial;font-size: medium;color: #3D3D3D;}table.tablesorter {background-color: </span>
+<span class="s1">#CDCDCD; align=&quot;center&quot;; margin: 0px auto;text-align: left;width: 50%;}table.tablesorter thead tr th, table.tablesorter tfoot tr th </span>
+<span class="s1">{background-color: #e6EEEE;border: 1px solid #FFF;font-size: medium;padding: 4px;}table.tablesorter thead tr .header </span>
+<span class="s1">{background-image:url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw%3D%3D);background-repeat: </span>
+<span class="s1">no-repeat;background-position: center right;cursor: pointer;}table.tablesorter tbody td {color: #3D3D3D;padding: </span>
+<span class="s1">4px;background-color: #FFF;vertical-align: top;}table.tablesorter tbody tr.odd td { background-color:#F0F0F6; }table.tablesorter </span>
+<span class="s1">thead tr .headerSortUp { </span>
+<span class="s1">background-image:url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7); </span>
+<span class="s1">}table.tablesorter thead tr .headerSortDown { </span>
+<span class="s1">background-image:url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7); </span>
+<span class="s1">}table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {background-color: #8dbdd8; }--&gt;&lt;/style&gt;</span>
+<span class="s1">&lt;/head&gt;</span>
+<span class="s1">&lt;body&gt;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.min.js&quot;&gt;&lt;/script&gt;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.tablesorter.js&quot;&gt;&lt;/script&gt;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot;&gt;&lt;!--</span>
+<span class="s1">--&gt;&lt;/script&gt;</span>
+<span class="s1">&lt;table id=&quot;music&quot; class=&quot;tablesorter&quot; margin-{left,right}: auto;&gt;</span>
+<span class="s1">&lt;thead&gt;</span>
+<span class="s1">  &lt;tr&gt;</span>
+<span class="s1">      &lt;th&gt;Artist&lt;/th&gt;</span>
+<span class="s1">          &lt;th&gt;Album&lt;/th&gt;</span>
+<span class="s1">              &lt;th&gt;Ratings&lt;/th&gt;</span>
+<span class="s1">       &lt;/tr&gt;</span>
+<span class="s1">        &lt;/thead&gt;</span>
+<span class="s1">         &lt;tbody&gt;&#39;</span>
+<span class="nv">me</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">0</span><span class="p">##*/</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$# </span>-eq <span class="m">0</span> -o <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s1">&#39;-h&#39;</span> -o <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s1">&#39;--help&#39;</span> -o ! -d <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Usage: </span><span class="nv">$me</span><span class="s2"> /path/to/flacs&quot;</span> 1&gt;<span class="p">&amp;</span>2
+    <span class="nb">exit </span>1
+<span class="k">fi</span>
+<span class="nv">fdir</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$TMPDIR</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="nv">TMPDIR</span><span class="o">=</span><span class="s1">&#39;/tmp&#39;</span><span class="p">;</span> <span class="k">fi</span>
+<span class="nv">tdir</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span> mktemp -d <span class="s2">&quot;</span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">me</span><span class="si">}</span><span class="s2">.XXXXXXXX&quot;</span> <span class="k">)</span><span class="s2">&quot;</span>
+<span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$tdir</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;</span><span class="nv">$me</span><span class="s2">: error: mktemp failed.&quot;</span> 1&gt;<span class="p">&amp;</span>2
+    <span class="nb">exit </span>1
+<span class="k">fi</span>
+<span class="nv">lastDir</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+<span class="k">while</span> <span class="nb">read </span>f<span class="p">;</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&quot;</span><span class="nv">$f</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="k">continue</span><span class="p">;</span> <span class="k">fi</span>
+    <span class="nv">currentDir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="p">%/*</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$currentDir</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="nv">$lastDir</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="k">continue</span><span class="p">;</span> <span class="k">fi</span>
+    <span class="nv">lastDir</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$currentDir</span><span class="s2">&quot;</span>
+    <span class="nb">shopt</span> -qs nocasematch
+    <span class="nv">artist</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="nv">albumArtist</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="nv">album</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="nv">year</span><span class="o">=</span><span class="s1">&#39;0000&#39;</span>
+    <span class="k">while</span> <span class="nb">read </span>line<span class="p">;</span> <span class="k">do</span>
+        <span class="k">case</span> <span class="s2">&quot;</span><span class="nv">$line</span><span class="s2">&quot;</span> in
+            <span class="nv">artist</span><span class="o">=</span>*<span class="o">)</span> <span class="nv">artist</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">line</span><span class="p">#*=</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">;;</span>
+            <span class="nv">albumartist</span><span class="o">=</span>*<span class="p">|</span>album*artist<span class="o">=</span>*<span class="o">)</span> <span class="nv">albumArtist</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">line</span><span class="p">#*=</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">;;</span>
+            <span class="nv">album</span><span class="o">=</span>*<span class="o">)</span> <span class="nv">album</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">line</span><span class="p">#*=</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">;;</span>
+            <span class="nv">date</span><span class="o">=</span>*<span class="o">)</span> <span class="nv">year</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">line</span><span class="p">#*=</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">;;</span>
+        <span class="k">esac</span>
+    <span class="k">done</span> &lt; &lt;<span class="o">(</span> metaflac --export-tags-to<span class="o">=</span>- <span class="s2">&quot;</span><span class="nv">$f</span><span class="s2">&quot;</span> 2&gt;/dev/null <span class="o">)</span>
+    <span class="nb">shopt</span> -qu nocasematch
+    <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$albumArtist</span><span class="s2">&quot;</span> -a -z <span class="s2">&quot;</span><span class="nv">$artist</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="k">continue</span><span class="p">;</span> <span class="k">fi</span>
+    <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$albumArtist</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="nv">albumArtist</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$artist</span><span class="s2">&quot;</span><span class="p">;</span> <span class="k">fi</span>
+    <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$album</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="k">continue</span><span class="p">;</span> <span class="k">fi</span>
+    <span class="nv">artistHash</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span> <span class="nb">echo</span> -n <span class="s2">&quot;</span><span class="nv">$albumArtist</span><span class="s2">&quot;</span> <span class="p">|</span> md5sum - <span class="p">|</span> cut -d <span class="s1">&#39; &#39;</span> -f <span class="m">1</span> <span class="k">)</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="o">[</span> ! -d <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">artistHash</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">artistHash</span><span class="si">}</span><span class="s2"> </span><span class="si">${</span><span class="nv">albumArtist</span><span class="si">}</span><span class="s2">&quot;</span> &gt;&gt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/artists&quot;</span>
+        mkdir <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">artistHash</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">fi</span>
+    <span class="nv">rating</span><span class="o">=</span><span class="s1">&#39;-&#39;</span>
+    <span class="k">if</span> <span class="o">[</span> -f <span class="s2">&quot;</span><span class="si">${</span><span class="nv">currentDir</span><span class="si">}</span><span class="s2">/../../rating.txt&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">read </span>rating &lt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">currentDir</span><span class="si">}</span><span class="s2">/../../rating.txt&quot;</span>
+    <span class="k">elif</span> <span class="o">[</span> -f <span class="s2">&quot;</span><span class="si">${</span><span class="nv">currentDir</span><span class="si">}</span><span class="s2">/../rating.txt&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">read </span>rating &lt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">currentDir</span><span class="si">}</span><span class="s2">/../rating.txt&quot;</span>
+    <span class="k">elif</span> <span class="o">[</span> -f <span class="s2">&quot;</span><span class="si">${</span><span class="nv">currentDir</span><span class="si">}</span><span class="s2">/rating.txt&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">read </span>rating &lt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">currentDir</span><span class="si">}</span><span class="s2">/rating.txt&quot;</span>
+    <span class="k">fi</span>
+    <span class="nb">echo</span> <span class="s2">&quot;</span><span class="nv">$year</span><span class="s2"> </span><span class="nv">$rating</span><span class="s2"> </span><span class="nv">$album</span><span class="s2">&quot;</span> &gt;&gt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">artistHash</span><span class="si">}</span><span class="s2">/albums&quot;</span>
+<span class="k">done</span> &lt; &lt;<span class="o">(</span> find <span class="s2">&quot;</span><span class="nv">$fdir</span><span class="s2">&quot;</span> -type f -iname <span class="s1">&#39;*.flac&#39;</span> 2&gt;/dev/null <span class="p">|</span> sort -u <span class="o">)</span>
+<span class="k">while</span> <span class="nb">read </span>artistHash artist<span class="p">;</span> <span class="k">do</span>
+        <span class="nv">rowspan</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span> sort -u <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">artistHash</span><span class="si">}</span><span class="s2">/albums&quot;</span> 2&gt;/dev/null <span class="p">|</span> wc -l 2&gt;/dev/null <span class="k">)</span><span class="s2">&quot;</span>
+    <span class="nb">echo</span> <span class="s2">&quot;&lt;tr&gt;&quot;</span>
+    <span class="nb">echo</span> <span class="s2">&quot;  &lt;td rowspan=&quot;</span><span class="nv">$rowspan</span><span class="s2">&quot;&gt;</span><span class="si">${</span><span class="nv">artist</span><span class="p">//&amp;/&amp;amp;</span><span class="si">}</span><span class="s2">&lt;/td&gt;&quot;</span>
+    <span class="k">while</span> <span class="nb">read </span>year rating album<span class="p">;</span> <span class="k">do</span>
+                <span class="nb">echo</span> <span class="s2">&quot;  &lt;td&gt;</span><span class="nv">$year</span><span class="s2"> </span><span class="si">${</span><span class="nv">album</span><span class="p">//&amp;/&amp;amp;</span><span class="si">}</span><span class="s2">&lt;/td&gt;&quot;</span>
+                <span class="nb">echo</span> <span class="s2">&quot;  &lt;td&gt;&lt;font color=red&gt;</span><span class="si">${</span><span class="nv">rating</span><span class="si">}</span><span class="s2">&lt;/font&gt;&lt;/td&gt;&quot;</span>
+                <span class="nb">echo</span> <span class="s2">&quot;&lt;/tr&gt;&quot;</span>
+    <span class="k">done</span> &lt; &lt;<span class="o">(</span> sort -u <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">artistHash</span><span class="si">}</span><span class="s2">/albums&quot;</span> 2&gt;/dev/null <span class="o">)</span>
+<span class="k">done</span> &lt; &lt;<span class="o">(</span> sort -u -k <span class="m">2</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tdir</span><span class="si">}</span><span class="s2">/artists&quot;</span> 2&gt;/dev/null <span class="o">)</span>
+<span class="nb">echo</span> <span class="s2">&quot;&lt;/tbody&gt;&lt;/table&gt;</span>
+<span class="s2">&lt;p&gt;</span>
+<span class="s2">    &lt;a href=&quot;</span>http://validator.w3.org/check?uri<span class="o">=</span>referer<span class="s2">&quot;&gt;&lt;img</span>
+<span class="s2">      src=&quot;</span>http://www.w3.org/Icons/valid-xhtml10<span class="s2">&quot; alt=&quot;</span>Valid XHTML 1.0 Strict<span class="s2">&quot; height=&quot;</span>31<span class="s2">&quot; width=&quot;</span>88<span class="s2">&quot; /&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;/p&gt;</span>
+<span class="s2">&lt;/body&gt;&lt;/html&gt;&quot;</span>
+rm -rf <span class="s2">&quot;</span><span class="nv">$tdir</span><span class="s2">&quot;</span>
+</pre></div>
+</td></tr></table>
+
+<p>This worked perfectly but it had a drawback. Original music that I purchased from amazon and other sources could not be read by metaflac.
+Using mutagen could have been another option, but I <em>really</em> prefer to do my stuff with MPD :)</p>
+<h2 id="rob-python-and-performance">rob``, python and performance</h2>
+<p>rob`` from the german arch linux IRC channel was so kind to create this really neat python script which does exactly what I wanted:
+Get all artists and their albums and create a nice html table. In addition it also scans my album ratings (created with my <a href="./mpdMenu.html">mpdmenu</a>
+) and puts them in another column.
+After some css tweaking the script was done in a few minutes.
+The above bash script which uses metaflac takes about 1 minute to finish the table. My tries with bash+mpc needed at least 20 minutes (!). 
+This very script now needs around 30 seconds. Not too bad :)</p>
+<p>Anyway here is the script:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre></div></td><td class="code"><div class="highlight"><pre><span class="c">#!/usr/bin/env python2</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">mpd</span>  <span class="c"># pacman -S python2-mpd</span>
+<span class="n">MUSIC_ROOT</span> <span class="o">=</span> <span class="s">&#39;/mnt/wasteland/Audio/Rips&#39;</span>
+<span class="n">RATING_FILE</span> <span class="o">=</span> <span class="s">&#39;rating.txt&#39;</span>
+<span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">*</span><span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">conditions</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conditions</span><span class="p">:</span>
+        <span class="c"># turn dict into flattened list, e.g.</span>
+        <span class="c"># {k1: v1, k2: v2} -&gt; [k1, v1, k2, v2]</span>
+        <span class="n">cond</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">conditions</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">*</span><span class="n">cond</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">listallinfo</span><span class="p">()</span>
+    <span class="n">yielded</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">it</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yielded</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">d</span>
+        <span class="n">yielded</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_artists</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">query</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&#39;albumartist&#39;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">a</span>
+<span class="k">def</span> <span class="nf">get_rating</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">artist</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">album</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">query</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="n">albumartist</span><span class="o">=</span><span class="n">artist</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">album</span><span class="o">=</span><span class="n">album</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">r</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">MUSIC_ROOT</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&quot;CD ?\d&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">RATING_FILE</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">rating</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">rating</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;-&quot;</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">MPDClient</span><span class="p">()</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MPD_HOST&#39;</span><span class="p">,</span> <span class="s">&#39;localhost&#39;</span><span class="p">)</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MPD_PORT&#39;</span><span class="p">,</span> <span class="s">&#39;6600&#39;</span><span class="p">)</span>
+    <span class="n">pw</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="s">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">host</span><span class="p">:</span>
+        <span class="n">pw</span><span class="p">,</span> <span class="n">host</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;@&quot;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">password</span><span class="p">(</span><span class="n">pw</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;html&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;head&gt;&lt;meta charset=</span><span class="se">\&quot;</span><span class="s">utf-8</span><span class="se">\&quot;</span><span class="s">/&gt;&lt;link rel=</span><span class="se">\&quot;</span><span class="s">stylesheet</span><span class="se">\&quot;</span><span class="s"> href=</span><span class="se">\&quot;</span><span class="s">//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css</span><span class="se">\&quot;</span><span class="s">&gt;&lt;style&gt;body{background:#eee}table{margin:5em auto; max-width:56em; background: white;}&lt;/style&gt;&lt;/head&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;body&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;div class=</span><span class="se">\&quot;</span><span class="s">table-responsive</span><span class="se">\&quot;</span><span class="s">&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;table id=</span><span class="se">\&quot;</span><span class="s">music</span><span class="se">\&quot;</span><span class="s"> class=</span><span class="se">\&quot;</span><span class="s">table table-bordered</span><span class="se">\&quot;</span><span class="s">&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;thead&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;tr&gt;&lt;th&gt;Artist&lt;/th&gt;&lt;th&gt;Year&lt;/th&gt;&lt;th&gt;Album&lt;/th&gt;&lt;th&gt;Rating&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">artist</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">get_artists</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">islower</span><span class="p">())):</span>
+        <span class="n">albums</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">query</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&#39;date&#39;</span><span class="p">,</span> <span class="s">&#39;album&#39;</span><span class="p">,</span> <span class="n">albumartist</span><span class="o">=</span><span class="n">artist</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;&lt;tr class=</span><span class="se">\&quot;</span><span class="s">newartist</span><span class="se">\&quot;</span><span class="s">&gt;&lt;td rowspan=&quot;{0}&quot;&gt;{1}&lt;/td&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">artist</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">album</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">albums</span><span class="p">):</span>
+            <span class="n">rating</span> <span class="o">=</span> <span class="n">get_rating</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">artist</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">album</span><span class="p">)</span>
+            <span class="c"># templating libraries ftw</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;td&gt;{}&lt;/td&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;td&gt;{}&lt;/td&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">album</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;td&gt;&lt;font color=</span><span class="se">\&quot;</span><span class="s">red</span><span class="se">\&quot;</span><span class="s">&gt;{}&lt;/td&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rating</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;/tr&gt;&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&lt;/table&gt;&lt;/div&gt;&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="the-result">The Result</h2>
+<p>And <a href="https://53280.de/music.html">here</a> is how the generated html will look like</p>
+            
+            
+            <hr/>
+<section>
+    <h2>Related Posts</h2>
+<ul class="related-posts-list">
+<li><a href="./fluxbox-with-manual-tiling.html" title="Fluxbox with manual tiling">Fluxbox with manual tiling</a></li>
+<li><a href="./another-month-another-window-manager.html" title="Another Month - Another Window Manager">Another Month - Another Window Manager</a></li>
+<li><a href="./herbstluftwm.html" title="Herbstluftwm">Herbstluftwm</a></li>
+<li><a href="./mpdMenu.html" title="mpdMenu - mpd on stereoids">mpdMenu - mpd on stereoids</a></li>
+<li><a href="./mpd.html" title="Grouping VA albums in mpd">Grouping VA albums in mpd</a></li>
+</ul>
+<hr />
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2014-04-05T14:20:00+02:00">Apr 5, 2014</time>
+            <h4>Category</h4>
+            <a class="category-link" href="./categories.html#computer-ref">computer</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="./tags.html#linux-ref">linux
+                    <span>6</span>
+</a></li>
+                <li><a href="./tags.html#mpd-ref">MPD
+                    <span>4</span>
+</a></li>
+                <li><a href="./tags.html#python-ref">python
+                    <span>1</span>
+</a></li>
+                <li><a href="./tags.html#scripting-ref">scripting
+                    <span>2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="https://last.fm/user/rasi_x" title="My lastfm Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-lastfm sidebar-social-links"></i></a>
+    <a href="irc://irc.freenode.net/archlinux.de" title="My irc Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-irc sidebar-social-links"></i></a>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="https://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+</html>
