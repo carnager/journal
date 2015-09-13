@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>POKE 53280,0</title><link href="https://journal.53280.de/" rel="alternate"></link><link href="https://journal.53280.de/feeds/computer.atom.xml" rel="self"></link><id>https://journal.53280.de/</id><updated>2014-12-25T12:40:00+01:00</updated><entry><title>Grouping VA albums in mpd</title><link href="https://journal.53280.de/mpd.html" rel="alternate"></link><updated>2014-12-25T12:40:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-12-25:mpd.html</id><summary type="html">&lt;h2 id="the-issue"&gt;The issue&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>POKE 53280,0</title><link href="https://journal.53280.de/" rel="alternate"></link><link href="https://journal.53280.de/feeds/computer.atom.xml" rel="self"></link><id>https://journal.53280.de/</id><updated>2015-05-29T20:00:00+02:00</updated><entry><title>rofi-pass</title><link href="https://journal.53280.de/rofi-pass.html" rel="alternate"></link><updated>2015-05-29T20:00:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2015-05-29:rofi-pass.html</id><summary type="html">&lt;h1 id="password-management-in-a-nutshell"&gt;password management in a nutshell&lt;/h1&gt;
+&lt;p&gt;There are quite a few ways to handle your passwords in linux.
+You could use the same password on every site and don't bother with password managers at all.
+Obviously that is a very bad idea, security-wise.
+Then there are services such as lastpass. You sign up and in return you get a browser extension
+which makes it very easy to add pages to your password vault. It also helps a lot entering passwords.
+Basically lastpass auto-fills all fields for you. It's a very convenient way of handling your
+passwords - and requires a lot of trust in 3rd party organizations. Which in this case is even
+located in the US, which basically forces them to include backdoors for the gouvernment. Ouch.&lt;/p&gt;
+&lt;p&gt;If security or trust is of concern to you, you need an application that is a) Open Source and b)
+hosted by yourself.
+There are prominent applications like keepass. It's open source and runs on all 3 major platforms,
+including linux. It's, however a mono application, which can lead to issues every now and then.
+All in all it runs quite well, has many features and also comes with ways to integrate into the browser.
+Its IPC mechanism is more or less unusable in linux, because the needed firefox plugin also needs mono.
+The http interface works well, but has obvious limits making it a rather unpleasant workflow.&lt;/p&gt;
+&lt;p&gt;If you seek for an alternative to keepass which also has some kind of browser integration you are basically
+screwed. They normally use xdotool to type Username and Password automatically, sending tab sequences in between.
+Well then. using xdotool, huh? I can do that too.&lt;/p&gt;
+&lt;h1 id="say-hello-to-pass-the-gnu-password-store"&gt;Say hello to pass - The gnu password store.&lt;/h1&gt;
+&lt;p&gt;There is another little tool called &lt;a href="http://www.passwordstore.org/" title="pass"&gt;pass&lt;/a&gt;, which has a nearly primitive aproach:
+It parses its password directory (default $HOME/.password-store), which is nothing more
+than a few directories (groups) filled with gpg-encrypted text files.
+The first line of each of these files is the password.
+All other lines can be used however the user likes. That's all.&lt;/p&gt;
+&lt;h2 id="integrate-pass-with-xdotool"&gt;integrate pass with xdotool.&lt;/h2&gt;
+&lt;p&gt;Seems rather easy to implement with xdotool, get the password with
+&lt;code&gt;pass FOLDER/name&lt;/code&gt; and then call xdotool to type it.
+But what about Username? What if a site requires more than 2 fields to be filled?
+What if some stupid javascript automatically presses the Tab key for you?&lt;/p&gt;
+&lt;p&gt;A proper format is needed. And that's what I did (together with &lt;a href="https://github.com/foxxx0" title="foxxx0 github"&gt;foxxx0&lt;/a&gt;)
+There is an importer for keepass files to pass files, which uses the following syntax:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;password
+UserName: myUser
+URL: some.url.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Since I used keepass anyway, I decided to keep this format. So what rofi-pass does is basically this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;parse the password&lt;/li&gt;
+&lt;li&gt;store UserName: and URL: in a temporary variable&lt;/li&gt;
+&lt;li&gt;call xdotool to type &amp;lt;UserName&amp;gt;, Tab, &amp;lt;Password&amp;gt; (letter by letter, not word by word to make sure it's
+not visible in a process viewer)&lt;/li&gt;
+&lt;li&gt;unset variables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So far so good. This works for the vast majority of pages. But now think about your online banking.
+Most likely you need a account number, a branch and your PIN to log in.&lt;/p&gt;
+&lt;p&gt;rofi-pass has the ability to define a custom order for fields that will be typed.
+See this example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;penispump123
+branch: 348
+account: 1122334
+URL: https://my.bank.de
+CustomOrder: account branch
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see here we have more fields defined. The most important bit is the last field called &lt;code&gt;CustomOrder&lt;/code&gt;
+Here one can define which fields will be processed in what order. In this case it's the fields "account" and "branch"
+The very first line will always be typed last, since pass expects this to be the password.
+This allows us to use autotype on any number of fields very easily.&lt;/p&gt;
+&lt;p&gt;If your page uses one of these autotabbing scripts mentioned above (like my bank does) simply add &lt;code&gt;NOTAB&lt;/code&gt; at the end of the
+password file.&lt;/p&gt;
+&lt;h2 id="rofi-pass-features"&gt;rofi-pass features&lt;/h2&gt;
+&lt;p&gt;rofi-pass can do the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;type User&lt;/li&gt;
+&lt;li&gt;type password&lt;/li&gt;
+&lt;li&gt;autotype (default &amp;lt;UserName&amp;gt;, Tab, &amp;lt;Password&amp;gt; - can be customized by CustomOrder field.&lt;/li&gt;
+&lt;li&gt;insert new pages to password store.&lt;/li&gt;
+&lt;li&gt;edit entries (using $EDITOR)&lt;/li&gt;
+&lt;li&gt;copy entries to clipboard&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Since rofi-pass uses &lt;a href="https://github.com/DaveDavenport/rofi" title="rofi github"&gt;rofi&lt;/a&gt;, it's very fast to filter all your entries and find the one you are looking for.
+By the way. rofi-pass will &lt;em&gt;not&lt;/em&gt; work with dmenu. Why is that?&lt;/p&gt;
+&lt;p&gt;Several reasons:
+First of all rofi fixes an annoying bug, one can run into with dmenu, where a KeyRelease event will be left on stdin,
+which can lead to first keypresses not being recognized properly. (&lt;a href="https://github.com/DaveDavenport/rofi/issues/167"&gt;issue on github&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Second and this is the most important part: rofi lately gained a feature allowing users to write scripts that can
+associate multiple hotkeys on the selection. This allows us to decide if we want to type the User only or use
+the complete autotype sequence without additional submenus. Very convenient!&lt;/p&gt;
+&lt;p&gt;Anyway, a picture says more than 100 words:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="rofi-pass" src="images/rofi-pass.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Get rofi-pass here: &lt;a href="https://github.com/carnager/rofi-pass" title="rofi-pass"&gt;rofi-pass&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="links"&gt;Links&lt;/h3&gt;
+&lt;p&gt;&lt;a href="http://www.passwordstore.org"&gt;pass homepage&lt;/a&gt;&lt;br /&gt;
+&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi github page&lt;/a&gt;&lt;br /&gt;
+&lt;a href="https://github.com/foxxx0"&gt;foxxx0 github page&lt;/a&gt;&lt;/p&gt;</summary><category term="xdotool"></category><category term="rofi"></category><category term="pass"></category><category term="linux"></category></entry><entry><title>Grouping VA albums in mpd</title><link href="https://journal.53280.de/mpd.html" rel="alternate"></link><updated>2014-12-25T12:40:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-12-25:mpd.html</id><summary type="html">&lt;h2 id="the-issue"&gt;The issue&lt;/h2&gt;
 &lt;p&gt;Every once in a while some user joins #mpd and asks how albums with
 several artists can be grouped together instead of displaying each artist
 individually in library.
@@ -67,7 +155,130 @@ that already have one (aka the multi-artist releases we fixed earlier)&lt;/p&gt;
 
 &lt;h2 id="result"&gt;Result&lt;/h2&gt;
 &lt;p&gt;See the same track from first image properly grouped under its album:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Fixed Compilation album" src="/images/fixed_tags.jpg" /&gt;&lt;/p&gt;</summary><category term="MPD"></category><category term="linux"></category><category term="tagging"></category></entry><entry><title>Create html list of all your albums</title><link href="https://journal.53280.de/albumlist_creator.html" rel="alternate"></link><updated>2014-04-05T14:20:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-04-05:albumlist_creator.html</id><summary type="html">&lt;h2 id="python-to-the-rescue"&gt;Python to the rescue&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="Fixed Compilation album" src="/images/fixed_tags.jpg" /&gt;&lt;/p&gt;</summary><category term="MPD"></category><category term="linux"></category><category term="tagging"></category></entry><entry><title>clerk - mpd client that needs typing</title><link href="https://journal.53280.de/clerk-mpd-client-that-needs-typing.html" rel="alternate"></link><updated>2014-08-09T10:36:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-08-09:clerk-mpd-client-that-needs-typing.html</id><summary type="html">&lt;h2 id="history"&gt;History&lt;/h2&gt;
+&lt;p&gt;Back in march I wrote about &lt;a href="https://journal.53280.de/mpdMenu.html"&gt;mpdMenu&lt;/a&gt;.
+It basically used mpc and dmenu to create lists of albums/files that were displayed
+in dmenu. It had some nice features like rating albums/tracks but to be honest it
+seemed a little rough around the edges.&lt;/p&gt;
+&lt;p&gt;Those times are over now. mpdMenu is history. Long live clerk.
+clerk is basically the same thing as mpdMenu was, but it's presented in a much
+nicer way.
+I cleaned up the whole menu structure and i think it looks rather nice now.
+But let's see what clerk can actually do.&lt;/p&gt;
+&lt;h2 id="features"&gt;Features&lt;/h2&gt;
+&lt;p&gt;Let's first have a look at the main menu.&lt;/p&gt;
+&lt;h3 id="the-main-menu"&gt;The Main Menu&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Pelican" src="/images/clerk-main.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Nothing too exciting here. Play a random album, play random tracks.
+The number of tracks can be configured in the options menu, which we will
+look at later.&lt;/p&gt;
+&lt;h3 id="browsing"&gt;Browsing&lt;/h3&gt;
+&lt;h4 id="current-artist"&gt;Current Artist&lt;/h4&gt;
+&lt;p&gt;The next section covers actual browsing functionality. The current artist menu
+allows you to browse all albums or tracks by the artist currently playing in mpd.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Current Artist" src="/images/clerk-current-artist.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Do you see the section that says "Adding Mode: Add"?
+Clicking this will change the Mode to either "Insert" or "Replace" so you can
+decide how the actual album will be handled in the queue.&lt;/p&gt;
+&lt;h4 id="current-queue"&gt;Current Queue&lt;/h4&gt;
+&lt;p&gt;The Current Queue menu will show what it says: mpd's current queue.
+It has 2 modes: Play and Delete. Play will simply change playback to the
+chosen song, whereas Delete will remove items from the queue.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Queue" src="/images/clerk-queue.jpg" /&gt;&lt;/p&gt;
+&lt;h4 id="manage-playlists"&gt;Manage Playlists&lt;/h4&gt;
+&lt;p&gt;The Manage Playlists menu allows you to save, crop and clear the current
+playlist - or load an already saved one. It will ask for a filename and
+even warn you if the playlist already exists.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Save Playlist" src="/images/clerk-playlist-save.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;In addition to this, you will find options to load an RSS Feed
+(those should be manually put in a file called podcasts in clerk's config directory)&lt;/p&gt;
+&lt;p&gt;There are also entries to suspend or resume the current queue.
+This is very handy if you are listening to a podcast and want to continue later.
+Just suspend the playlist, listen to whatever you want and later resume it.
+It will load the state of the playlist and the position of the active track.&lt;/p&gt;
+&lt;h3 id="browsing-the-database"&gt;Browsing the Database&lt;/h3&gt;
+&lt;p&gt;Clerk offers several ways to browse the database.
+First there is the hierarchical browser, which let's you first chose an artist
+and displays all albums related to it. If you chose to browse even deeper
+it will show all tracks of the given album.
+At any point in the library it's possible to add/insert/replace every shown artist/album/track.&lt;/p&gt;
+&lt;p&gt;If you use rofi it is even possible to add several songs at once, by hitting Shift+Enter.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Hierachical Browser" src="/images/clerk-browser1.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;It's also possible to browse the Database by date, list all albums.
+Last but not least clerk can show you all songs in database.
+Each browser can add, insert or replace the results into the queue.&lt;/p&gt;
+&lt;p&gt;Speaking of insert mode. This is one thing that most mpd clients get wrong, imho.
+You see, insert in mpd means, that the track will be placed right after the one
+that is currently playing. Which works fine, as long as you are not in random mode.
+For this scenario mpd offers a feature called "Priorities", which can set a weight
+to songs in the playlist. Sounds like a good solution, but the developer of mpd only
+made it available for random mode. In normal playback mode weights are ignored.&lt;/p&gt;
+&lt;p&gt;So there are some clients that support priorities. But they seperate it from the "Insert" command.
+Which seems wrong to me, because all in all you always want the same thing, be it in random mode or not:
+Play that goddamn song NEXT.&lt;/p&gt;
+&lt;p&gt;Well, this is exactly what clerk does. Insert will always play the selected songs next. No matter what
+mode mpd is in. Nice.&lt;/p&gt;
+&lt;h3 id="a-word-about-mpc"&gt;A word about mpc&lt;/h3&gt;
+&lt;p&gt;For the tracks and album listings I really wanted to have a way to show a nice tag based view.
+Which turned out to be not-easy at all.
+Why is that?
+Well there are actually 2 issues here, which both needed solving.
+First of all mpd does not allow to list albums or tracks in a formatted way.
+This basically means that you have to fetch the whole database with all tags just to display one part
+of the information (in this case either title or album). This is slow. very.
+I worked around this by creating a cache for clerk.
+Clerk will automatically detect if the mpd database has changed since the last time. If it has it will update
+its local cache. No user interaction needed.
+But there was another issue. mpc only knows the listall command (which only sends URIs) - not the listallinfo (which sends tags).&lt;/p&gt;
+&lt;p&gt;But I wanted those nice formatted views!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Sad Kitten" src="/images/sad-kitten.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;So I took the hard road and started developing a python clone of mpc. I simply called mppc (music player python client).
+It's an explicit dependency for clerk and is used in quite some places.
+Not only does it allow for the formatted album/track view, but it also adds readcomments support to clerk, a feature mpd offers
+for nearly a year now, but I havent seen a single client using it. With readcomments it's possible to show ALL tags of a file.&lt;/p&gt;
+&lt;p&gt;But let's see what's left to show.&lt;/p&gt;
+&lt;h3 id="the-options-dialog"&gt;The options dialog&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Options Dialog" src="/images/clerk-options.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The options dialog gives you all options you would expect in a mpd client.
+You can change all modes, enable/disable outputs, set crossfade or toggle replaygain.
+In addition it's possible to start/stop mpdscribble. This works for either local
+or remote mpdscribbles (set in config file). Right now it kills or start mpdscribble.
+Hopefully mpdscribble will receive an option to suspend scrobbling itself via the
+client protocol. We will see :)&lt;/p&gt;
+&lt;h3 id="ratings"&gt;Ratings&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt; UPDATE &lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The ratings system is using mpds sticker database now, so ratings work for
+every filetype. Everything else remains the same, flat files for portability.&lt;/p&gt;
+&lt;p&gt;One feature in clerk not found elsewhere is the ability to rate albums or tracks.
+Personally I don't do track ratings, but in my tests it worked fine for flac
+and mp3 files. Vorbis files are not yet implemented. It's just a pain to update
+vorbis tags.&lt;/p&gt;
+&lt;p&gt;So I will only speak about the albumratings now.
+First of all, ratings need local access to the music directory.
+I wanted a way that is 100% portable and absolutely NOT tied to a musicplayer.
+This rules out mpd's sticker database, which seems hardly maintained anyway.
+Tags would be another obvious choice, but it's still not accessible enough for my taste.
+So the way I created ratings is by saving a ratings file to the album folder.
+That's all. A tiny text file containing the actual rating in the first line
+and some basic information (artist, date, album) afterwards.&lt;/p&gt;
+&lt;p&gt;Clerk can even load albums by ratings. To make this happen I use bash's globbing mode
+which can very fast wander through the filesystem. Then I only need to grep for ratings in all text files
+and voila: It works.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Ratings" src="/images/clerk-rating.jpg" /&gt;&lt;/p&gt;
+&lt;h3 id="mildly-related"&gt;Mildly related&lt;/h3&gt;
+&lt;p&gt;I already wrote about &lt;a href="https://journal.53280.de/albumlist_creator.html"&gt;musiclist.py&lt;/a&gt;
+This little script uses the ratings file and mpd itself to create a nice table of all albums, including
+ratings. Thanks to thor77 this now shows some very nice Stars instead of plain numbers.
+You can see the result here: &lt;a href="https://list.53280.de"&gt;musiclist&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="the-rest"&gt;The rest&lt;/h3&gt;
+&lt;p&gt;Apart from those features clerk offers basic controls (Play, Stop, Next, Prev, Clear) and lookup of
+lyrics, artists, albums (using surfraw).&lt;/p&gt;
+&lt;p&gt;Last but not least every single dialog is available via cli arguments to quickly bind your favorite features to
+hotkeys. See all available arguments with &lt;code&gt;clerk -h&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you want to try it out, you can find it on github, together with mppc:&lt;br /&gt;
+&lt;a href="https://github.com/carnager"&gt;github&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To get the most out of it, you really should get the excellent rofi tool by DaveDavenport:&lt;br /&gt;
+&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi&lt;/a&gt;&lt;/p&gt;</summary><category term="mpd"></category><category term="programming"></category><category term="rofi"></category></entry><entry><title>Create html list of all your albums</title><link href="https://journal.53280.de/albumlist_creator.html" rel="alternate"></link><updated>2014-04-05T14:20:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-04-05:albumlist_creator.html</id><summary type="html">&lt;h2 id="python-to-the-rescue"&gt;Python to the rescue&lt;/h2&gt;
 &lt;p&gt;I love my CD collection. I needed months to rip all my CDs into flac format and tagging it all correctly will probably never be finished.
 But what use is the biggest collection if you cannot show off? So I wanted a script that makes a nice html table of my music.
 And ideally it uses MPD since that has an index of my music anyway.&lt;/p&gt;

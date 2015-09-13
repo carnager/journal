@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Rasi" />
+        <meta name="copyright" content="Rasi" />
+
+
+<meta name="keywords" content="xdotool, rofi, pass, linux, computer, " />
+
+<meta property="og:title" content="rofi-pass "/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="./rofi-pass.html" />
+<meta property="og:description" content="rofi-pass - a flexible and fast way to use your password-store" />
+<meta property="og:site_name" content="POKE 53280,0" />
+<meta property="og:article:author" content="Rasi" />
+<meta property="og:article:published_time" content="2015-05-29T20:00:00+02:00" />
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rofi-pass ">
+<meta name="twitter:description" content="rofi-pass - a flexible and fast way to use your password-store">
+
+        <title>rofi-pass  · POKE 53280,0
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+        <link href="https://journal.53280.de/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="POKE 53280,0 - Full Atom Feed" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>POKE 53280,0</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href=".">Home</a></li>
+                            <li ><a href="./pages/links.html">Links</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="./rofi-pass.html"> rofi-pass  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            
+            <h1 id="password-management-in-a-nutshell">password management in a nutshell</h1>
+<p>There are quite a few ways to handle your passwords in linux.
+You could use the same password on every site and don't bother with password managers at all.
+Obviously that is a very bad idea, security-wise.
+Then there are services such as lastpass. You sign up and in return you get a browser extension
+which makes it very easy to add pages to your password vault. It also helps a lot entering passwords.
+Basically lastpass auto-fills all fields for you. It's a very convenient way of handling your
+passwords - and requires a lot of trust in 3rd party organizations. Which in this case is even
+located in the US, which basically forces them to include backdoors for the gouvernment. Ouch.</p>
+<p>If security or trust is of concern to you, you need an application that is a) Open Source and b)
+hosted by yourself.
+There are prominent applications like keepass. It's open source and runs on all 3 major platforms,
+including linux. It's, however a mono application, which can lead to issues every now and then.
+All in all it runs quite well, has many features and also comes with ways to integrate into the browser.
+Its IPC mechanism is more or less unusable in linux, because the needed firefox plugin also needs mono.
+The http interface works well, but has obvious limits making it a rather unpleasant workflow.</p>
+<p>If you seek for an alternative to keepass which also has some kind of browser integration you are basically
+screwed. They normally use xdotool to type Username and Password automatically, sending tab sequences in between.
+Well then. using xdotool, huh? I can do that too.</p>
+<h1 id="say-hello-to-pass-the-gnu-password-store">Say hello to pass - The gnu password store.</h1>
+<p>There is another little tool called <a href="http://www.passwordstore.org/" title="pass">pass</a>, which has a nearly primitive aproach:
+It parses its password directory (default $HOME/.password-store), which is nothing more
+than a few directories (groups) filled with gpg-encrypted text files.
+The first line of each of these files is the password.
+All other lines can be used however the user likes. That's all.</p>
+<h2 id="integrate-pass-with-xdotool">integrate pass with xdotool.</h2>
+<p>Seems rather easy to implement with xdotool, get the password with
+<code>pass FOLDER/name</code> and then call xdotool to type it.
+But what about Username? What if a site requires more than 2 fields to be filled?
+What if some stupid javascript automatically presses the Tab key for you?</p>
+<p>A proper format is needed. And that's what I did (together with <a href="https://github.com/foxxx0" title="foxxx0 github">foxxx0</a>)
+There is an importer for keepass files to pass files, which uses the following syntax:</p>
+<div class="highlight"><pre>password
+UserName: myUser
+URL: some.url.com
+</pre></div>
+
+
+<p>Since I used keepass anyway, I decided to keep this format. So what rofi-pass does is basically this:</p>
+<ul>
+<li>parse the password</li>
+<li>store UserName: and URL: in a temporary variable</li>
+<li>call xdotool to type &lt;UserName&gt;, Tab, &lt;Password&gt; (letter by letter, not word by word to make sure it's
+not visible in a process viewer)</li>
+<li>unset variables.</li>
+</ul>
+<p>So far so good. This works for the vast majority of pages. But now think about your online banking.
+Most likely you need a account number, a branch and your PIN to log in.</p>
+<p>rofi-pass has the ability to define a custom order for fields that will be typed.
+See this example:</p>
+<div class="highlight"><pre>penispump123
+branch: 348
+account: 1122334
+URL: https://my.bank.de
+CustomOrder: account branch
+</pre></div>
+
+
+<p>As you can see here we have more fields defined. The most important bit is the last field called <code>CustomOrder</code>
+Here one can define which fields will be processed in what order. In this case it's the fields "account" and "branch"
+The very first line will always be typed last, since pass expects this to be the password.
+This allows us to use autotype on any number of fields very easily.</p>
+<p>If your page uses one of these autotabbing scripts mentioned above (like my bank does) simply add <code>NOTAB</code> at the end of the
+password file.</p>
+<h2 id="rofi-pass-features">rofi-pass features</h2>
+<p>rofi-pass can do the following:</p>
+<ul>
+<li>type User</li>
+<li>type password</li>
+<li>autotype (default &lt;UserName&gt;, Tab, &lt;Password&gt; - can be customized by CustomOrder field.</li>
+<li>insert new pages to password store.</li>
+<li>edit entries (using $EDITOR)</li>
+<li>copy entries to clipboard</li>
+</ul>
+<p>Since rofi-pass uses <a href="https://github.com/DaveDavenport/rofi" title="rofi github">rofi</a>, it's very fast to filter all your entries and find the one you are looking for.
+By the way. rofi-pass will <em>not</em> work with dmenu. Why is that?</p>
+<p>Several reasons:
+First of all rofi fixes an annoying bug, one can run into with dmenu, where a KeyRelease event will be left on stdin,
+which can lead to first keypresses not being recognized properly. (<a href="https://github.com/DaveDavenport/rofi/issues/167">issue on github</a>)</p>
+<p>Second and this is the most important part: rofi lately gained a feature allowing users to write scripts that can
+associate multiple hotkeys on the selection. This allows us to decide if we want to type the User only or use
+the complete autotype sequence without additional submenus. Very convenient!</p>
+<p>Anyway, a picture says more than 100 words:</p>
+<p><img alt="rofi-pass" src="images/rofi-pass.png" /></p>
+<p>Get rofi-pass here: <a href="https://github.com/carnager/rofi-pass" title="rofi-pass">rofi-pass</a></p>
+<h3 id="links">Links</h3>
+<p><a href="http://www.passwordstore.org">pass homepage</a><br />
+<a href="https://github.com/DaveDavenport/rofi">rofi github page</a><br />
+<a href="https://github.com/foxxx0">foxxx0 github page</a></p>
+            
+            
+            <hr/>
+<section>
+    <h2>Related Posts</h2>
+<ul class="related-posts-list">
+<li><a href="./another-month-another-window-manager.html" title="Another Month - Another Window Manager">Another Month - Another Window Manager</a></li>
+<li><a href="./herbstluftwm.html" title="Herbstluftwm">Herbstluftwm</a></li>
+<li><a href="./mpdMenu.html" title="mpdMenu - mpd on stereoids">mpdMenu - mpd on stereoids</a></li>
+<li><a href="./clerk-mpd-client-that-needs-typing.html" title="clerk - mpd client that needs typing">clerk - mpd client that needs typing</a></li>
+<li><a href="./mpd.html" title="Grouping VA albums in mpd">Grouping VA albums in mpd</a></li>
+</ul>
+<hr />
+</section>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="./mpd.html" title="Previous: Grouping VA albums in mpd">Grouping VA albums in mpd</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-05-29T20:00:00+02:00">May 29, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="./categories.html#computer-ref">computer</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="./tags.html#linux-ref">linux
+                    <span>7</span>
+</a></li>
+                <li><a href="./tags.html#pass-ref">pass
+                    <span>1</span>
+</a></li>
+                <li><a href="./tags.html#rofi-ref">rofi
+                    <span>2</span>
+</a></li>
+                <li><a href="./tags.html#xdotool-ref">xdotool
+                    <span>1</span>
+</a></li>
+            </ul>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="https://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    </body>
+</html>

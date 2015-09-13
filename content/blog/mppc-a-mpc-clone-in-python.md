@@ -1,13 +1,13 @@
 Title: clerk - mpd client that needs typing
 Date: 2014-08-09 10:36
-Category: rofi, mpd
-Tags: mpd, programming
+Category: computer
+Tags: mpd, programming, rofi
 Authors: Rasi
 Summary: clerk - mpd client on steroids
 
 ## History
 
-Back in march I wrote about [mpdMenu](|filename|/mpdmenu.md).
+Back in march I wrote about [mpdMenu](|filename|/blog/mpdmenu.md).
 It basically used mpc and dmenu to create lists of albums/files that were displayed
 in dmenu. It had some nice features like rating albums/tracks but to be honest it
 seemed a little rough around the edges.
@@ -162,7 +162,7 @@ and voila: It works.
 
 ### Mildly related
 
-I already wrote about [musiclist.py](|filename|/mpd-albumlist-creator.md)
+I already wrote about [musiclist.py](|filename|/blog/mpd-albumlist-creator.md)
 This little script uses the ratings file and mpd itself to create a nice table of all albums, including
 ratings. Thanks to thor77 this now shows some very nice Stars instead of plain numbers.
 You can see the result here: [musiclist](https://list.53280.de)

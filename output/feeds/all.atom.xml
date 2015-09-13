@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>POKE 53280,0</title><link href="https://journal.53280.de/" rel="alternate"></link><link href="https://journal.53280.de/feeds/all.atom.xml" rel="self"></link><id>https://journal.53280.de/</id><updated>2014-12-25T12:40:00+01:00</updated><entry><title>Grouping VA albums in mpd</title><link href="https://journal.53280.de/mpd.html" rel="alternate"></link><updated>2014-12-25T12:40:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-12-25:mpd.html</id><summary type="html">&lt;h2 id="the-issue"&gt;The issue&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>POKE 53280,0</title><link href="https://journal.53280.de/" rel="alternate"></link><link href="https://journal.53280.de/feeds/all.atom.xml" rel="self"></link><id>https://journal.53280.de/</id><updated>2015-05-29T20:00:00+02:00</updated><entry><title>rofi-pass</title><link href="https://journal.53280.de/rofi-pass.html" rel="alternate"></link><updated>2015-05-29T20:00:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2015-05-29:rofi-pass.html</id><summary type="html">&lt;h1 id="password-management-in-a-nutshell"&gt;password management in a nutshell&lt;/h1&gt;
+&lt;p&gt;There are quite a few ways to handle your passwords in linux.
+You could use the same password on every site and don't bother with password managers at all.
+Obviously that is a very bad idea, security-wise.
+Then there are services such as lastpass. You sign up and in return you get a browser extension
+which makes it very easy to add pages to your password vault. It also helps a lot entering passwords.
+Basically lastpass auto-fills all fields for you. It's a very convenient way of handling your
+passwords - and requires a lot of trust in 3rd party organizations. Which in this case is even
+located in the US, which basically forces them to include backdoors for the gouvernment. Ouch.&lt;/p&gt;
+&lt;p&gt;If security or trust is of concern to you, you need an application that is a) Open Source and b)
+hosted by yourself.
+There are prominent applications like keepass. It's open source and runs on all 3 major platforms,
+including linux. It's, however a mono application, which can lead to issues every now and then.
+All in all it runs quite well, has many features and also comes with ways to integrate into the browser.
+Its IPC mechanism is more or less unusable in linux, because the needed firefox plugin also needs mono.
+The http interface works well, but has obvious limits making it a rather unpleasant workflow.&lt;/p&gt;
+&lt;p&gt;If you seek for an alternative to keepass which also has some kind of browser integration you are basically
+screwed. They normally use xdotool to type Username and Password automatically, sending tab sequences in between.
+Well then. using xdotool, huh? I can do that too.&lt;/p&gt;
+&lt;h1 id="say-hello-to-pass-the-gnu-password-store"&gt;Say hello to pass - The gnu password store.&lt;/h1&gt;
+&lt;p&gt;There is another little tool called &lt;a href="http://www.passwordstore.org/" title="pass"&gt;pass&lt;/a&gt;, which has a nearly primitive aproach:
+It parses its password directory (default $HOME/.password-store), which is nothing more
+than a few directories (groups) filled with gpg-encrypted text files.
+The first line of each of these files is the password.
+All other lines can be used however the user likes. That's all.&lt;/p&gt;
+&lt;h2 id="integrate-pass-with-xdotool"&gt;integrate pass with xdotool.&lt;/h2&gt;
+&lt;p&gt;Seems rather easy to implement with xdotool, get the password with
+&lt;code&gt;pass FOLDER/name&lt;/code&gt; and then call xdotool to type it.
+But what about Username? What if a site requires more than 2 fields to be filled?
+What if some stupid javascript automatically presses the Tab key for you?&lt;/p&gt;
+&lt;p&gt;A proper format is needed. And that's what I did (together with &lt;a href="https://github.com/foxxx0" title="foxxx0 github"&gt;foxxx0&lt;/a&gt;)
+There is an importer for keepass files to pass files, which uses the following syntax:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;password
+UserName: myUser
+URL: some.url.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Since I used keepass anyway, I decided to keep this format. So what rofi-pass does is basically this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;parse the password&lt;/li&gt;
+&lt;li&gt;store UserName: and URL: in a temporary variable&lt;/li&gt;
+&lt;li&gt;call xdotool to type &amp;lt;UserName&amp;gt;, Tab, &amp;lt;Password&amp;gt; (letter by letter, not word by word to make sure it's
+not visible in a process viewer)&lt;/li&gt;
+&lt;li&gt;unset variables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So far so good. This works for the vast majority of pages. But now think about your online banking.
+Most likely you need a account number, a branch and your PIN to log in.&lt;/p&gt;
+&lt;p&gt;rofi-pass has the ability to define a custom order for fields that will be typed.
+See this example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;penispump123
+branch: 348
+account: 1122334
+URL: https://my.bank.de
+CustomOrder: account branch
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see here we have more fields defined. The most important bit is the last field called &lt;code&gt;CustomOrder&lt;/code&gt;
+Here one can define which fields will be processed in what order. In this case it's the fields "account" and "branch"
+The very first line will always be typed last, since pass expects this to be the password.
+This allows us to use autotype on any number of fields very easily.&lt;/p&gt;
+&lt;p&gt;If your page uses one of these autotabbing scripts mentioned above (like my bank does) simply add &lt;code&gt;NOTAB&lt;/code&gt; at the end of the
+password file.&lt;/p&gt;
+&lt;h2 id="rofi-pass-features"&gt;rofi-pass features&lt;/h2&gt;
+&lt;p&gt;rofi-pass can do the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;type User&lt;/li&gt;
+&lt;li&gt;type password&lt;/li&gt;
+&lt;li&gt;autotype (default &amp;lt;UserName&amp;gt;, Tab, &amp;lt;Password&amp;gt; - can be customized by CustomOrder field.&lt;/li&gt;
+&lt;li&gt;insert new pages to password store.&lt;/li&gt;
+&lt;li&gt;edit entries (using $EDITOR)&lt;/li&gt;
+&lt;li&gt;copy entries to clipboard&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Since rofi-pass uses &lt;a href="https://github.com/DaveDavenport/rofi" title="rofi github"&gt;rofi&lt;/a&gt;, it's very fast to filter all your entries and find the one you are looking for.
+By the way. rofi-pass will &lt;em&gt;not&lt;/em&gt; work with dmenu. Why is that?&lt;/p&gt;
+&lt;p&gt;Several reasons:
+First of all rofi fixes an annoying bug, one can run into with dmenu, where a KeyRelease event will be left on stdin,
+which can lead to first keypresses not being recognized properly. (&lt;a href="https://github.com/DaveDavenport/rofi/issues/167"&gt;issue on github&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Second and this is the most important part: rofi lately gained a feature allowing users to write scripts that can
+associate multiple hotkeys on the selection. This allows us to decide if we want to type the User only or use
+the complete autotype sequence without additional submenus. Very convenient!&lt;/p&gt;
+&lt;p&gt;Anyway, a picture says more than 100 words:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="rofi-pass" src="images/rofi-pass.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Get rofi-pass here: &lt;a href="https://github.com/carnager/rofi-pass" title="rofi-pass"&gt;rofi-pass&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="links"&gt;Links&lt;/h3&gt;
+&lt;p&gt;&lt;a href="http://www.passwordstore.org"&gt;pass homepage&lt;/a&gt;&lt;br /&gt;
+&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi github page&lt;/a&gt;&lt;br /&gt;
+&lt;a href="https://github.com/foxxx0"&gt;foxxx0 github page&lt;/a&gt;&lt;/p&gt;</summary><category term="xdotool"></category><category term="rofi"></category><category term="pass"></category><category term="linux"></category></entry><entry><title>Grouping VA albums in mpd</title><link href="https://journal.53280.de/mpd.html" rel="alternate"></link><updated>2014-12-25T12:40:00+01:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-12-25:mpd.html</id><summary type="html">&lt;h2 id="the-issue"&gt;The issue&lt;/h2&gt;
 &lt;p&gt;Every once in a while some user joins #mpd and asks how albums with
 several artists can be grouped together instead of displaying each artist
 individually in library.
@@ -190,7 +278,7 @@ hotkeys. See all available arguments with &lt;code&gt;clerk -h&lt;/code&gt;&lt;/
 &lt;p&gt;If you want to try it out, you can find it on github, together with mppc:&lt;br /&gt;
 &lt;a href="https://github.com/carnager"&gt;github&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;To get the most out of it, you really should get the excellent rofi tool by DaveDavenport:&lt;br /&gt;
-&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi&lt;/a&gt;&lt;/p&gt;</summary><category term="mpd"></category><category term="programming"></category></entry><entry><title>Create html list of all your albums</title><link href="https://journal.53280.de/albumlist_creator.html" rel="alternate"></link><updated>2014-04-05T14:20:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-04-05:albumlist_creator.html</id><summary type="html">&lt;h2 id="python-to-the-rescue"&gt;Python to the rescue&lt;/h2&gt;
+&lt;a href="https://github.com/DaveDavenport/rofi"&gt;rofi&lt;/a&gt;&lt;/p&gt;</summary><category term="mpd"></category><category term="programming"></category><category term="rofi"></category></entry><entry><title>Create html list of all your albums</title><link href="https://journal.53280.de/albumlist_creator.html" rel="alternate"></link><updated>2014-04-05T14:20:00+02:00</updated><author><name>Rasi</name></author><id>tag:journal.53280.de,2014-04-05:albumlist_creator.html</id><summary type="html">&lt;h2 id="python-to-the-rescue"&gt;Python to the rescue&lt;/h2&gt;
 &lt;p&gt;I love my CD collection. I needed months to rip all my CDs into flac format and tagging it all correctly will probably never be finished.
 But what use is the biggest collection if you cannot show off? So I wanted a script that makes a nice html table of my music.
 And ideally it uses MPD since that has an index of my music anyway.&lt;/p&gt;

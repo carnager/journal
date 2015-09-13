@@ -15,7 +15,7 @@ FTP_TARGET_DIR=/
 SSH_HOST=proteus
 SSH_PORT=22
 SSH_USER=carnager
-SSH_TARGET_DIR=/srv/http/blog2
+SSH_TARGET_DIR=/srv/http/blog
 
 S3_BUCKET=my_s3_bucket
 

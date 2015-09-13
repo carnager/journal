@@ -122,7 +122,7 @@ Using mutagen could have been another option, but I *really* prefer to do my stu
 ## rob``, python and performance
 
 rob`` from the german arch linux IRC channel was so kind to create this really neat python script which does exactly what I wanted:
-Get all artists and their albums and create a nice html table. In addition it also scans my album ratings (created with my [mpdmenu]({filename}/mpdmenu.md)
+Get all artists and their albums and create a nice html table. In addition it also scans my album ratings (created with my [mpdmenu]({filename}/blog/mpdmenu.md)
 ) and puts them in another column.
 After some css tweaking the script was done in a few minutes.
 The above bash script which uses metaflac takes about 1 minute to finish the table. My tries with bash+mpc needed at least 20 minutes (!). 

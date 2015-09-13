@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 DEFAULT_PAGINATION = False
 AUTHOR = 'Rasi'
 SITENAME = 'POKE 53280,0'
-SITEURL = 'http://journal.53280.de'
+SITEURL = 'https://journal.53280.de'
 
 TIMEZONE = 'Europe/Paris'
 
@@ -15,13 +15,12 @@ DEFAULT_LANG = 'en'
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
+DISPLAY_PAGES_ON_MENU = True
+ARTICLE_PATHS = ['blog']
+
 
 # Blogroll
 LINKS =  (('About', '#/'),)
-
-# Social widget
-SOCIAL = (('lastfm', 'https://last.fm/user/rasi_x'),
-          ('irc', 'irc://irc.freenode.net/archlinux.de'),)
 
 DEFAULT_PAGINATION = 10
 
@@ -32,9 +31,9 @@ THEME = "themes/elegant"
 
 PLUGIN_PATHS = ['pelican-plugins']
 #PLUGINS = ['liquid_tags.video', 'sitemap', 'tipue_search', 'related_posts']
-PLUGINS = ['sitemap', 'tipue_search', 'related_posts']
+PLUGINS = ['sitemap', 'tipue_search', 'extract_toc', 'related_posts', 'neighbors']
 
-DIRECT_TEMPLATES = (('index', 'tags', 'categories','archives', 'search', '404'))
+DIRECT_TEMPLATES = (('index', 'tags', 'categories','archives', 'links', 'search', '404'))
 MD_EXTENSIONS = ['codehilite(css_class=highlight)', 'extra', 'headerid']
 STATIC_PATHS = ['theme/images', 'images', 'static']
 
